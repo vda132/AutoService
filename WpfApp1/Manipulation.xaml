@@ -4,12 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
+        xmlns:Control="clr-namespace:WpfApp1.UserControllers"
         mc:Ignorable="d"
         Title="Manipulation" Height="450" Width="800">
     <Grid>
-        <Button x:Name="addingButton" Content="Добавить сотрудника" HorizontalAlignment="Left" Margin="113,67,0,0" VerticalAlignment="Top" Visibility="Visible" Height="50" Width="169"/>
-        <Button x:Name="deleteButton" Content="Удалить сотрудника" HorizontalAlignment="Left" Margin="113,166,0,0" VerticalAlignment="Top" Height="50" Width="169"/>
-        <Button x:Name="editButton" Content="Редактировать сотрудника" HorizontalAlignment="Left" Margin="371,67,0,0" VerticalAlignment="Top" Height="50" Width="169"/>
-
+        <Control:DBAdministratorController x:Name="DBAdministratorController" Visibility="Hidden"/>
+        <Control:DirectorController x:Name="DirectorController" Visibility="Hidden"/>
+        <Control:MasterController x:Name="MasterController" Visibility="Hidden"/>
     </Grid>
+    
 </Window>

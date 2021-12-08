@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WpfApp1.UserControllers;
 
 namespace WpfApp1
 {
@@ -23,24 +24,24 @@ namespace WpfApp1
         AutoServiceContext autoServiceDB = new AutoServiceContext();
         private void ShowLogic(Account account)
         {
-            addingButton.Visibility = Visibility.Visible;
             Worker worker = autoServiceDB.Workers.FirstOrDefault(A=>A.Idworker==account.Idworker);
             position = autoServiceDB.Positions.Find(worker.Idposition);
+            
             switch (position.NamePosition) 
             {
                 case "Директор":
                 {
-                    addingButton.Content = "Добавить сотрудника";
+                    DirectorController.Visibility = Visibility.Visible;
                     break;
                 }
                 case "Мастер":
                 {
-                    addingButton.Content = "Добавить клиента";
+                    MasterController.Visibility = Visibility.Visible;
                     break;
                 }
                 case "Администратор БД":
                 {
-                    addingButton.Content = "Добавить автоконцерн";
+                    DBAdministratorController.Visibility = Visibility.Visible;
                     break;
                 }
             }
