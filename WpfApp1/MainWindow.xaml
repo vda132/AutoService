@@ -3,16 +3,31 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp1" xmlns:components="clr-namespace:WpfApp1.Components" d:DataContext="{d:DesignInstance Type=local:ApplicationViewModel}"
+        xmlns:MenuController="clr-namespace:WpfApp1.UserControllers.MenuControllers"
+        xmlns:Controller="clr-namespace:WpfApp1.UserControllers"
+        xmlns:MenuViewModel="clr-namespace:WpfApp1.ViewModel.MenuViewModel"
+        xmlns:ViewModel="clr-namespace:WpfApp1.ViewModel"
+        d:DataContext="{d:DesignInstance Type=ViewModel:MainWindowViewModel}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    
+
+
     <Grid>
-        <Button Content="Войти" HorizontalAlignment="Left" Margin="308,314,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.838,6.134" Width="168" Height="34" Command="{Binding LoginCommand}"/>
-        <Label Content="Введите логин:&#xD;&#xA;" HorizontalAlignment="Left" Margin="316,59,0,0" VerticalAlignment="Top" Width="151" FontSize="18"/>
-        <TextBox x:Name="loginTextBox" HorizontalAlignment="Left" Margin="306,117,0,0" Text="{Binding UserName}" TextWrapping="Wrap" VerticalAlignment="Top" Width="178" Height="27" AutomationProperties.Name="loginTextBox"/>
-        <Label Content="Введите пароль:" HorizontalAlignment="Left" Margin="316,182,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.179,-0.052" Width="151" FontSize="18"/>
-        <components:BindablePasswordBox
-                    Password="{Binding Password}" Margin="282,199,288,155" />
+        <ContentControl Content="{Binding CurrentMenuViewModel}">
+            <ContentControl.Resources>
+                <DataTemplate DataType="{x:Type ViewModel:LoginViewModel}">
+                    <Controller:LoginController/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type MenuViewModel:DirectorMenuViewModel}">
+                    <MenuController:DirectorMenuControl />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type MenuViewModel:MasterMenuViewModel}">
+                    <MenuController:MasterMenuControl />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type MenuViewModel:DBAdminMenuViewModel}">
+                    <MenuController:DBAdminMenuControl />
+                </DataTemplate>
+            </ContentControl.Resources>
+        </ContentControl>
     </Grid>
 </Window>

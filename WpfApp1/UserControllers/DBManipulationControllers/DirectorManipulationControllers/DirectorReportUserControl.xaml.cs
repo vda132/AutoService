@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,19 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WpfApp1.ViewModel;
+using WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewModel;
 
-namespace WpfApp1
+namespace WpfApp1.UserControllers.DBManipulationControllers.DirectorManipulationControllers
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for DirectorReportUserControl.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class DirectorReportUserControl : UserControl
     {
-        public MainWindow()
+        public DirectorReportUserControl()
         {
             InitializeComponent();
-            this.DataContext = new MainWindowViewModel();
+            this.DataContext = new DirectorReportViewModel();
         }
     }
 }

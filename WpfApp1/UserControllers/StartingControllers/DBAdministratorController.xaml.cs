@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,17 +14,17 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfApp1.ViewModel;
 
-namespace WpfApp1
+namespace WpfApp1.UserControllers
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for DBAdministratorController.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class DBAdministratorController : UserControl
     {
-        public MainWindow()
+        public DBAdministratorController()
         {
             InitializeComponent();
-            this.DataContext = new MainWindowViewModel();
+            this.DataContext = new DBAdministratorViewModel();
         }
     }
 }

@@ -12,17 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel;
 
-namespace WpfApp1.UserControllers
+namespace WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers
 {
     /// <summary>
-    /// Interaction logic for DirectorController.xaml
+    /// Interaction logic for DBAdminBrandUserControl.xaml
     /// </summary>
-    public partial class DirectorController : UserControl
+    public partial class DBAdminBrandUserControl : UserControl
     {
-        public DirectorController()
+        public DBAdminBrandUserControl()
         {
             InitializeComponent();
+            this.DataContext = new DBAdminBrandViewModel();
         }
     }
 }

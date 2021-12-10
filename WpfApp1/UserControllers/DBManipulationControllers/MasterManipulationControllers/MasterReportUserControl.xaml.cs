@@ -12,17 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewModel;
 
-namespace WpfApp1.UserControllers
+namespace WpfApp1.UserControllers.DBManipulationControllers.MasterManipulationControllers
 {
     /// <summary>
-    /// Interaction logic for DBAdministratorController.xaml
+    /// Interaction logic for MasterReportUserControl.xaml
     /// </summary>
-    public partial class DBAdministratorController : UserControl
+    public partial class MasterReportUserControl : UserControl
     {
-        public DBAdministratorController()
+        public MasterReportUserControl()
         {
             InitializeComponent();
+            this.DataContext = new MasterReportViewModel();
         }
     }
 }

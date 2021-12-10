@@ -12,17 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WpfApp1.ViewModel;
 
 namespace WpfApp1.UserControllers
 {
     /// <summary>
-    /// Interaction logic for MasterController.xaml
+    /// Interaction logic for DirectorController.xaml
     /// </summary>
-    public partial class MasterController : UserControl
+    public partial class DirectorController : UserControl
     {
-        public MasterController()
+        public DirectorController()
         {
             InitializeComponent();
+            this.DataContext = new DirectorViewModel();
         }
     }
 }
