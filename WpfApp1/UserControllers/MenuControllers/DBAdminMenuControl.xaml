@@ -8,7 +8,9 @@
              xmlns:menuviewmodel="clr-namespace:WpfApp1.ViewModel.MenuViewModel" 
              xmlns:controller="clr-namespace:WpfApp1.UserControllers" d:DataContext="{d:DesignInstance Type=menuviewmodel:DBAdminMenuViewModel}"
              xmlns:viewmodels="clr-namespace:WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel"
+             xmlns:addviewmodels="clr-namespace:WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel.AddingViewModel"
              xmlns:controllers="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers"
+             xmlns:addcontrollers="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers.AddingControllres"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -21,8 +23,23 @@
                 <DataTemplate DataType="{x:Type viewmodels:DBAdminAutoConcernViewModel}">
                     <controllers:DBAdminAutoConcernUserControl />
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type addviewmodels:AddingAutoConcernViewModel}">
+                    <addcontrollers:AddingAutoConcernController/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type addviewmodels:AddingAutoPartModelViewModel}">
+                    <addcontrollers:AddingAutoPartModelUserController/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type addviewmodels:AddingBrandViewModel}">
+                    <addcontrollers:AddingBrandController/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type addviewmodels:AddingModelViewModel}">
+                    <addcontrollers:AddingModelController/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type addviewmodels:AddingAutoPartViewModel}">
+                    <addcontrollers:AddingAutoPart/>
+                </DataTemplate>
                 <DataTemplate DataType="{x:Type viewmodels:DBAdminAutoPartModelViewModel}">
-                    <controllers:DBAdmonAutoPartModel />
+                    <controllers:DBAdminAutoPartModelUserControl/>
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type viewmodels:DBAdminAutoPartPriceViewModel}">
                     <controllers:DBAdminAutoPartPriceUserControl />

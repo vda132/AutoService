@@ -7,6 +7,15 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <DataGrid x:Name="AutoConcerns" SelectedItem = "{Binding SelectedBrand}" Margin="75,0,75,118" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding CarBrands}" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Название автоконцерна" Binding="{Binding IdautoConcernNavigation.NameAutoConcern}" Width="*"/>
+                <DataGridTextColumn Header="Название марки" Width="*" Binding="{Binding NameCarBrand}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Content="Добавить" 
+            Command="{Binding ToAddingBrand}" 
+            HorizontalAlignment="Left" Margin="110,361,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
+
     </Grid>
 </UserControl>

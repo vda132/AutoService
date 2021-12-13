@@ -8,6 +8,7 @@ namespace WpfApp1
 {
     public partial class AutoServiceContext : DbContext
     {
+        private static AutoServiceContext context;
         public AutoServiceContext()
         {
         }
@@ -16,7 +17,14 @@ namespace WpfApp1
             : base(options)
         {
         }
-
+        public static AutoServiceContext GetContext()
+        {
+            if (context == null)
+            {
+                context = new AutoServiceContext();
+            }
+            return context;
+        }
         public virtual DbSet<Account> Accounts { get; set; }
         public virtual DbSet<AutoConcern> AutoConcerns { get; set; }
         public virtual DbSet<AutoPart> AutoParts { get; set; }

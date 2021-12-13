@@ -29,32 +29,33 @@ namespace WpfApp1.ViewModel
                 return loginCommand ??
                       (loginCommand = new RelayCommand((o) =>
                       {
-                          try
-                          {
-                              if (userName == null || password == null) throw new Exception();
-                              acc = DB.Accounts.FirstOrDefault(A => A.LoginAccount == userName);
-                              if (acc == null) throw new LoginException("Такого пользователя не существует.");
-                              if (acc.PasswordAccount == password)
-                              {
-                                  IsLogin = true;
-                                  Worker worker = DB.Workers.FirstOrDefault(A => A.Idworker == acc.Idworker);
-                                  position = DB.Positions.Find(worker.Idposition);
-                                  ShowLogic();
-                              }
-                              else throw new PasswordException("Пароль неверный.");
-                          }
-                          catch (LoginException ex) 
-                          {
-                              MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                          }
-                          catch (PasswordException ex)
-                          {
-                              MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                          }
-                          catch (Exception)
-                          {
-                              MessageBox.Show("Поля должны быть заполнены.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                          }
+                          Navigation.Navigation.ToDBAdmin();
+                          //try
+                          //{
+                          //    if (userName == null || password == null) throw new Exception();
+                          //    acc = DB.Accounts.FirstOrDefault(A => A.LoginAccount == userName);
+                          //    if (acc == null) throw new LoginException("Такого пользователя не существует.");
+                          //    if (acc.PasswordAccount == password)
+                          //    {
+                          //        IsLogin = true;
+                          //        Worker worker = DB.Workers.FirstOrDefault(A => A.Idworker == acc.Idworker);
+                          //        position = DB.Positions.Find(worker.Idposition);
+                          //        ShowLogic();
+                          //    }
+                          //    else throw new PasswordException("Пароль неверный.");
+                          //}
+                          //catch (LoginException ex) 
+                          //{
+                          //    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                          //}
+                          //catch (PasswordException ex)
+                          //{
+                          //    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                          //}
+                          //catch (Exception)
+                          //{
+                          //    MessageBox.Show("Поля должны быть заполнены.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                          //}
                       }
                        ));
             }

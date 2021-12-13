@@ -12,19 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel;
+using WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel.AddingViewModel;
 
-namespace WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers
+namespace WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers.AddingControllres
 {
     /// <summary>
-    /// Interaction logic for DBAdmonAutoPartModel.xaml
+    /// Interaction logic for AddingModelController.xaml
     /// </summary>
-    public partial class DBAdmonAutoPartModel : UserControl
+    public partial class AddingModelController : UserControl
     {
-        public DBAdmonAutoPartModel()
+        public AddingModelController()
         {
             InitializeComponent();
-            this.DataContext = new DBAdminAutoPartModelViewModel();
+            this.DataContext = new AddingModelViewModel();
         }
     }
 }
