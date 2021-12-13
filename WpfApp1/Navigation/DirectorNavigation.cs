@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WpfApp1.ViewModel;
 using WpfApp1.ViewModel.Abstract;
 using WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewModel;
+using WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewModel.AddingViewModel;
 
 namespace WpfApp1.Navigation
 {
@@ -23,7 +24,10 @@ namespace WpfApp1.Navigation
         {
             Navigate(new DirectorWorkersViewModel());
         }
-
+        public static void ToAddingWorker()
+        {
+            Navigate(new AddingWorkerViewModel());
+        }
         public static void ToDirectorService()
         {
             Navigate(new DirectorServiceViewModel());

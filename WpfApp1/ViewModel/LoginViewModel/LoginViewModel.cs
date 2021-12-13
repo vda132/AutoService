@@ -29,7 +29,7 @@ namespace WpfApp1.ViewModel
                 return loginCommand ??
                       (loginCommand = new RelayCommand((o) =>
                       {
-                          Navigation.Navigation.ToDBAdmin();
+                          Navigation.Navigation.ToDirector();
                           //try
                           //{
                           //    if (userName == null || password == null) throw new Exception();

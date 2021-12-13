@@ -9,10 +9,10 @@
     <Grid>
         <Button Content="Войти" HorizontalAlignment="Left" Margin="311,310,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.838,6.134" Width="168" Height="34" Command="{Binding LoginCommand}"/>
         <Label Content="Введите логин:&#xD;&#xA;" HorizontalAlignment="Left" Margin="316,59,0,0" VerticalAlignment="Top" Width="151" FontSize="18"/>
-        <TextBox x:Name="loginTextBox" HorizontalAlignment="Left" Margin="306,117,0,0" Text="{Binding UserName}" TextWrapping="Wrap" VerticalAlignment="Top" Width="178" Height="27" AutomationProperties.Name="loginTextBox"/>
+        <TextBox x:Name="loginTextBox" HorizontalAlignment="Left" Margin="306,117,0,0" Text="{Binding UserName}" TextWrapping="Wrap" VerticalAlignment="Top" Width="178" Height="26" AutomationProperties.Name="loginTextBox"/>
         <Label Content="Введите пароль:" HorizontalAlignment="Left" Margin="316,182,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.179,-0.052" Width="151" FontSize="18"/>
         <components:BindablePasswordBox
-                    Password="{Binding Password}" Margin="282,199,288,155" />
+                    Password="{Binding Password}" Margin="290,222,280,132" />
         
     </Grid>
 </UserControl>
