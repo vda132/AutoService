@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="WpfApp1.UserControllers.DBManipulationControllers.MasterManipulationControllers.AddingControllers.AddingClientUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.MasterManipulationControllers.AddingControllers"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <TextBox HorizontalAlignment="Left" Text="{Binding NameClient}" Margin="92,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding StateNumber}" Margin="92,221,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding Date}" Margin="92,282,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Добавить" HorizontalAlignment="Left" Margin="92,373,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
+        <Label Content="ФИО" HorizontalAlignment="Left" Margin="92,22,0,0" VerticalAlignment="Top"/>
+        <Label Content="Марка машины" HorizontalAlignment="Left" Margin="92,77,0,0" VerticalAlignment="Top"/>
+        <Label Content="Модель машины" HorizontalAlignment="Left" Margin="92,131,0,0" VerticalAlignment="Top"/>
+        <Label Content="Гос. Номер" HorizontalAlignment="Left" Margin="92,190,0,0" VerticalAlignment="Top"/>
+        <Label Content="Дата выпуска" HorizontalAlignment="Left" Margin="92,251,0,0" VerticalAlignment="Top"/>
+
+        <ComboBox x:Name="CarModel" ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedCarModel}" HorizontalAlignment="Left" DisplayMemberPath="NameModel" Margin="92,162,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="CarBrand" ItemsSource="{Binding CarBrands}" SelectedItem="{Binding SelectedCarBrand}" HorizontalAlignment="Left" DisplayMemberPath="NameCarBrand" Margin="92,108,0,0" VerticalAlignment="Top" Width="120"/>
+
+    </Grid>
+</UserControl>
