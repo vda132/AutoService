@@ -5,14 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfApp1.UserControllers" xmlns:components="clr-namespace:WpfApp1.Components" xmlns:viewmodel="clr-namespace:WpfApp1.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:LoginViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="504" d:DesignWidth="899">
     <Grid>
-        <Button Content="Войти" HorizontalAlignment="Left" Margin="311,310,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.838,6.134" Width="168" Height="34" Command="{Binding LoginCommand}"/>
+        <Button Content="Войти" HorizontalAlignment="Left" Margin="311,344,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.838,6.134" Width="168" Height="34" Command="{Binding LoginCommand}"/>
         <Label Content="Введите логин:&#xD;&#xA;" HorizontalAlignment="Left" Margin="316,59,0,0" VerticalAlignment="Top" Width="151" FontSize="18"/>
         <TextBox x:Name="loginTextBox" HorizontalAlignment="Left" Margin="306,117,0,0" Text="{Binding UserName}" TextWrapping="Wrap" VerticalAlignment="Top" Width="178" Height="26" AutomationProperties.Name="loginTextBox"/>
         <Label Content="Введите пароль:" HorizontalAlignment="Left" Margin="316,182,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.179,-0.052" Width="151" FontSize="18"/>
         <components:BindablePasswordBox
-                    Password="{Binding Password}" Margin="290,222,280,132" />
-        
+                    Password="{Binding Password}" Margin="238,194,332,160" />
+
     </Grid>
 </UserControl>

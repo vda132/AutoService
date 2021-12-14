@@ -9,7 +9,7 @@
         xmlns:ViewModel="clr-namespace:WpfApp1.ViewModel"
         d:DataContext="{d:DesignInstance Type=ViewModel:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="504" Width="899">
 
 
     <Grid>

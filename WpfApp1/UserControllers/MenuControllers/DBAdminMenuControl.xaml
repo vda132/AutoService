@@ -8,13 +8,13 @@
              xmlns:menuviewmodel="clr-namespace:WpfApp1.ViewModel.MenuViewModel" 
              xmlns:controller="clr-namespace:WpfApp1.UserControllers" d:DataContext="{d:DesignInstance Type=menuviewmodel:DBAdminMenuViewModel}"
              xmlns:viewmodels="clr-namespace:WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel"
-             xmlns:addviewmodels="clr-namespace:WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel.AddingViewModel"
+             
              xmlns:controllers="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers"
-             xmlns:addcontrollers="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers.AddingControllres"
+             
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Button x:Name="BackButton" Width="40" Height="20" Margin="-720,-350,0,0" Content="Назад" FontSize="12" Command="{Binding BackButtonCommand}"/>
+        <Button x:Name="BackButton" Width="40" Height="20" Margin="20,25,740,405" Content="Назад" FontSize="12" Command="{Binding BackButtonCommand}"/>
         <ContentControl Content="{Binding CurrentViewModel}">
             <ContentControl.Resources>
                 <DataTemplate DataType="{x:Type viewmodel:DBAdministratorViewModel}">
@@ -22,21 +22,6 @@
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type viewmodels:DBAdminAutoConcernViewModel}">
                     <controllers:DBAdminAutoConcernUserControl />
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type addviewmodels:AddingAutoConcernViewModel}">
-                    <addcontrollers:AddingAutoConcernController/>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type addviewmodels:AddingAutoPartModelViewModel}">
-                    <addcontrollers:AddingAutoPartModelUserController/>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type addviewmodels:AddingBrandViewModel}">
-                    <addcontrollers:AddingBrandController/>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type addviewmodels:AddingModelViewModel}">
-                    <addcontrollers:AddingModelController/>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type addviewmodels:AddingAutoPartViewModel}">
-                    <addcontrollers:AddingAutoPart/>
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type viewmodels:DBAdminAutoPartModelViewModel}">
                     <controllers:DBAdminAutoPartModelUserControl/>

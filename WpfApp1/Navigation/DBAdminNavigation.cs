@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using WpfApp1.ViewModel;
 using WpfApp1.ViewModel.Abstract;
 using WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel;
-using WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel.AddingViewModel;
+
 
 namespace WpfApp1.Navigation
 {
@@ -49,29 +49,6 @@ namespace WpfApp1.Navigation
             Navigate(new DBAdminBrandViewModel());
         }
 
-        public static void ToAddingAutoConcern()
-        {
-            Navigate(new AddingAutoConcernViewModel());
-        }
-
-        public static void ToAddingBrand()
-        {
-            Navigate(new AddingBrandViewModel());
-        }
-
-        public static void ToAddingModel()
-        {
-            Navigate(new AddingModelViewModel());
-        }
-        public static void ToAddingAutoPart()
-        {
-            Navigate(new AddingAutoPartViewModel());
-        }
-
-        public static void ToAddingAutoPartModel()
-        {
-            Navigate(new AddingAutoPartModelViewModel());
-        }
         private static void Navigate(BaseViewModel viewModel)
         {
             previousViewmModel.Push(currentViewModel);

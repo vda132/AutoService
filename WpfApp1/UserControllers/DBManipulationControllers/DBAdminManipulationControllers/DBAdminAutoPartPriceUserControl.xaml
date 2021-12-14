@@ -5,8 +5,27 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="504" d:DesignWidth="899">
     <Grid>
-            
+        <DataGrid x:Name="AutoConcerns"  Width="600" Height="350"  Margin="249,29,10,120" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding AutoPartsPrices}" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Название детали" Binding="{Binding IdautoPartNavigation.NameAutoPart}" Width="*"/>
+                <DataGridTextColumn Header="Дата изменения" Width="*" Binding="{Binding DateChange,StringFormat=\{0:dd.MM.yy\}}"/>
+                <DataGridTextColumn Header="Измененная цена" Width="*" Binding="{Binding PriceWithoutRepair,StringFormat=\{0:0.00\}}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Label Content="Выберите деталь" HorizontalAlignment="Left" Margin="96,75,0,0" VerticalAlignment="Top"/>
+        <ComboBox HorizontalAlignment="Left" ItemsSource="{Binding AutoParts}" DisplayMemberPath="NameAutoPart" SelectedItem="{Binding SelectedAutoPart}" Margin="96,106,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Выберите дату" HorizontalAlignment="Left" Margin="96,163,0,0" VerticalAlignment="Top"/>
+        <Label Content="Введите цену данной детали" HorizontalAlignment="Left" Margin="96,267,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="96,298,0,0" Text="{Binding Price}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Добавить информацию" Command="{Binding AddInformation}" HorizontalAlignment="Left" Margin="96,417,0,0" VerticalAlignment="Top" Width="168" Height="35"/>
+        <DatePicker HorizontalAlignment="Left" SelectedDate="{Binding SelectedDate}" Margin="96,194,0,0" VerticalAlignment="Top">
+        </DatePicker>
+        <ComboBox HorizontalAlignment="Left" ItemsSource="{Binding AutoParts}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="NameAutoPart" Margin="390,417,0,0" VerticalAlignment="Top" Width="179" Height="30"/>
+        <Label Content="Фильтрация по названию запчасти." HorizontalAlignment="Left" Margin="390,386,0,0" VerticalAlignment="Top"/>
+        <Button Content="Сбросить фильтр" Command="{Binding ResetFilter}" IsEnabled="{Binding IsEnableFilter}" HorizontalAlignment="Left" Margin="657,417,0,0" VerticalAlignment="Top" Height="30" Width="133"/>
+
+
     </Grid>
 </UserControl>

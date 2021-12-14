@@ -55,48 +55,116 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 selectedAutoPart = value;
                 OnPropertyChanged(nameof(SelectedAutoPart));
                 IsEnable = true;
+                AutoPartName = SelectedAutoPart.NameAutoPart;
+                SelectedCountry = SelectedAutoPart.IdcountryNavigation;
             }
         }
 
-        RelayCommand toAddingAutoPart;
-        public RelayCommand ToAddingAutoPart
+        RelayCommand editAutoPart;
+        public RelayCommand EditAutoPart
         {
             get
             {
-                return toAddingAutoPart ??
-                      (toAddingAutoPart = new RelayCommand((o) =>
+                return editAutoPart ??
+                      (editAutoPart = new RelayCommand((o) =>
                       {
-                          Navigation.DBAdminNavigation.ToAddingAutoPart();
-                      }
-                       ));
-            }
-        }
-        RelayCommand deletingAutoPart;
-        public RelayCommand DeletingAutoPart
-        {
-            get
-            {
-                return deletingAutoPart ??
-                      (deletingAutoPart = new RelayCommand((o) =>
-                      {
-                          if (MessageBox.Show($"Вы точно хотите удалить выбранную деталь под названием " +
+                          if (MessageBox.Show($"Вы точно хотите редактировать выбранную деталь под названием " +
                               $"{SelectedAutoPart.NameAutoPart}?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                           {
                               try
                               {
-                                  AutoServiceContext.GetContext().AutoParts.Remove(SelectedAutoPart);
-                                  MessageBox.Show("Данные удалены.");
+                                  AutoPart tmp = AutoServiceContext.GetContext().AutoParts.FirstOrDefault(A => A.IdautoPart == SelectedAutoPart.IdautoPart);
+                                  tmp.NameAutoPart = AutoPartName;
+                                  tmp.IdcountryNavigation = SelectedCountry;
+                                  AutoServiceContext.GetContext().AutoParts.Update(tmp);
+                                  MessageBox.Show("Данные обновлены.");
                                   AutoServiceContext.GetContext().SaveChanges();
-                                  autoParts = AutoServiceContext.GetContext().AutoParts.ToList();
-                                  AutoParts = autoParts;
+
 
                               }
                               catch (Exception ex)
                               {
                                   MessageBox.Show(ex.Message);
                               }
+                              SetProperties();
+                              AutoParts = displayAutoParts;
+                              IsEnable = false;
+                              AutoPartName = null;
+                              selectedCountry = null;
                           }
                       }));
+            }
+        }
+        Country tmp;
+        List<Country> countries = AutoServiceContext.GetContext().Countries.ToList();
+        private string autoPartName;
+        RelayCommand addAutoPart;
+        public List<Country> CountryNames
+        {
+            get => countries;
+            set
+            {
+                countries = value;
+                OnPropertyChanged(nameof(CountryNames));
+            }
+        }
+        private Country selectedCountry;
+        public Country SelectedCountry
+        {
+            get => selectedCountry;
+            set
+            {
+                selectedCountry = value;
+                OnPropertyChanged(nameof(SelectedCountry));
+            }
+        }
+        public string AutoPartName
+        {
+            get => autoPartName;
+            set
+            {
+                autoPartName = value;
+                OnPropertyChanged(nameof(AutoPartName));
+            }
+        }
+        public RelayCommand AddAutoPart
+        {
+            get
+            {
+                return addAutoPart ??
+                      (addAutoPart = new RelayCommand((o) =>
+                      {
+                          StringBuilder errors = new StringBuilder();
+                          if (String.IsNullOrWhiteSpace(autoPartName))
+                              errors.AppendLine("Укажите название запчасти.");
+                          if (selectedCountry == null)
+                              errors.AppendLine("Укажите страну производитель.");
+                          if (errors.Length > 0)
+                          {
+                              MessageBox.Show(errors.ToString());
+                              return;
+                          }
+
+                          tmp = countries.FirstOrDefault(A => A.NameCountry == selectedCountry.NameCountry);
+                          int id = tmp.Idcountry;
+                          AutoPart tmpPart = new AutoPart() { NameAutoPart = autoPartName, Idcountry = id };
+
+                          AutoServiceContext.GetContext().AutoParts.Add(tmpPart);
+                          try
+                          {
+                              AutoServiceContext.GetContext().SaveChanges();
+                              MessageBox.Show("Информация сохранена!");
+                          }
+                          catch (Exception ex)
+                          {
+                              MessageBox.Show(ex.Message.ToString());
+                          }
+                          SetProperties();
+                          AutoParts = displayAutoParts;
+                          AutoPartName = null;
+                          selectedCountry = null;
+                      }
+                       ));
             }
         }
     }

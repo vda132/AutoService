@@ -5,17 +5,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="504" d:DesignWidth="899">
     <Grid>
-        <DataGrid x:Name="AutoConcerns" SelectedItem = "{Binding SelectedBrand}" Margin="75,0,75,118" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding CarModels}" SelectionMode="Single">
+        <DataGrid x:Name="AutoConcerns" Width="600" Height="350" SelectedItem = "{Binding SelectedBrand}" Margin="249,29,10,120" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding CarModels}" SelectionMode="Single">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Название марки" Binding="{Binding IdcarBrandNavigation.NameCarBrand}" Width="*"/>
                 <DataGridTextColumn Header="Название модели" Width="*" Binding="{Binding NameModel}"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button Content="Добавить" 
-            Command="{Binding ToAddingModel}" 
-            HorizontalAlignment="Left" Margin="110,361,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
+            Command="{Binding AddCarModel}" 
+            HorizontalAlignment="Left" Margin="178,438,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding ModelName}" Margin="126,90,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="CountriesBox" HorizontalAlignment="Left"  
+            ItemsSource="{Binding CarBrands}" 
+            DisplayMemberPath="NameCarBrand" 
+            SelectedItem="{Binding SelecteCarBrand}"  Margin="126,212,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Введите название" HorizontalAlignment="Left" Margin="126,59,0,0" VerticalAlignment="Top"/>
+        <Label Content="Выберете марку" HorizontalAlignment="Left" Margin="126,181,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </UserControl>

@@ -5,10 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.MasterManipulationControllers"
              
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             mc:Ignorable="d" Height="504" Width="899">
     <Grid>
-        <DataGrid x:Name="AutoConcerns" SelectedItem = "{Binding SelectedAutoConcern}" Margin="75,0,75,118" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding AutoConcerns}" SelectionMode="Single">
+        <TextBox HorizontalAlignment="Left" Text="{Binding NameClient}" Margin="92,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding StateNumber}" Margin="92,221,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Добавить" HorizontalAlignment="Left" Margin="92,373,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
+        <Label Content="ФИО" HorizontalAlignment="Left" Margin="92,22,0,0" VerticalAlignment="Top"/>
+        <Label Content="Марка машины" HorizontalAlignment="Left" Margin="92,77,0,0" VerticalAlignment="Top"/>
+        <Label Content="Модель машины" HorizontalAlignment="Left" Margin="92,131,0,0" VerticalAlignment="Top"/>
+        <Label Content="Гос. Номер" HorizontalAlignment="Left" Margin="92,190,0,0" VerticalAlignment="Top"/>
+        <Label Content="Дата выпуска" HorizontalAlignment="Left" Margin="92,251,0,0" VerticalAlignment="Top"/>
+
+        <ComboBox x:Name="CarModel" ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedCarModel}" HorizontalAlignment="Left" DisplayMemberPath="NameModel" Margin="92,162,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="CarBrand" ItemsSource="{Binding CarBrands}" SelectedItem="{Binding SelectedCarBrand}" HorizontalAlignment="Left" DisplayMemberPath="NameCarBrand" Margin="92,108,0,0" VerticalAlignment="Top" Width="120"/>
+
+        <DataGrid x:Name="AutoConcerns" Width="600" Height="350" SelectedItem = "{Binding SelectedAutoConcern}" Margin="249,29,10,120" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding AutoConcerns}" SelectionMode="Single">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ФИО клиента" Binding="{Binding NameAutoConcern}" Width="*"/>
                 <DataGridTextColumn Header="Марка машины" Width="*" Binding="{Binding IdcountryNavigation.NameCountry}"/>
@@ -17,12 +28,13 @@
                 <DataGridTextColumn Header="Дата выпуска" Binding="{Binding NameAutoConcern}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Content="Добавить" 
+        <Button Content="Добавить еще машину клиенту" 
             Command="{Binding ToAddingClient}" 
-            HorizontalAlignment="Left" Margin="110,361,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
+            HorizontalAlignment="Left" Margin="92,438,0,0" VerticalAlignment="Top" Width="183" Height="26"/>
         <Button Content="Удалить" 
             IsEnabled="{Binding IsEnable}" 
             Command="{Binding DeletingAutoconcern}"
-            HorizontalAlignment="Left" Margin="222,361,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
+            HorizontalAlignment="Left" Margin="305,438,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
+        <DatePicker HorizontalAlignment="Left" SelectedDate="{Binding Date}" Margin="92,282,0,0" VerticalAlignment="Top" Width="120" Height="28"/>
     </Grid>
 </UserControl>
