@@ -46,5 +46,9 @@ namespace WpfApp1.ViewModel.MenuViewModel
         {
             CurrentViewModel = Navigation.DirectorNavigation.CurrentViewModel;
         }
+        public override void Dispose()
+        {
+            Navigation.DirectorNavigation.StateChanged -= NavigationStateChanged;
+        }
     }
 }

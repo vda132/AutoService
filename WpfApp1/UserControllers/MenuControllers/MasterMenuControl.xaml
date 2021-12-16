@@ -10,9 +10,9 @@
              xmlns:ManipViewModel="clr-namespace:WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewModel"
              xmlns:controllers="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.MasterManipulationControllers"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
-        <Button x:Name="BackButton" Width="40" Height="20" Margin="-720,-350,0,0" Content="Назад" FontSize="12" Command="{Binding BackButtonCommand}"/>
+        <Button x:Name="BackButton" Width="40" Height="20" Margin="-800,-500,0,0" Content="Назад" FontSize="12" Command="{Binding BackButtonCommand}"/>
         <ContentControl Content="{Binding CurrentViewModel}">
             <ContentControl.Resources>
                 <DataTemplate DataType="{x:Type viewmodel:MasterViewModel}">

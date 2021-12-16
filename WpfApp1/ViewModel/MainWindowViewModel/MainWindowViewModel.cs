@@ -22,12 +22,15 @@ namespace WpfApp1.ViewModel
         public MainWindowViewModel()
         {
             Navigation.Navigation.StateChanged += NavigationStateChanged;
-            currentMenuViewModel =  Navigation.Navigation.CurrentViewModel;
+            currentMenuViewModel = Navigation.Navigation.CurrentViewModel;
         }
         private void NavigationStateChanged()
         {
-            ///OnPropertyChanged(nameof(CurrentViewModel));
             CurrentMenuViewModel = Navigation.Navigation.CurrentViewModel;
+        }
+        public override void Dispose()
+        {
+            Navigation.Navigation.StateChanged -= NavigationStateChanged;
         }
     }
 }

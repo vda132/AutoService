@@ -7,34 +7,40 @@
              
              mc:Ignorable="d" Height="504" Width="899">
     <Grid>
-        <TextBox HorizontalAlignment="Left" Text="{Binding NameClient}" Margin="92,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Text="{Binding StateNumber}" Margin="92,221,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button Content="Добавить" HorizontalAlignment="Left" Margin="92,373,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
-        <Label Content="ФИО" HorizontalAlignment="Left" Margin="92,22,0,0" VerticalAlignment="Top"/>
-        <Label Content="Марка машины" HorizontalAlignment="Left" Margin="92,77,0,0" VerticalAlignment="Top"/>
-        <Label Content="Модель машины" HorizontalAlignment="Left" Margin="92,131,0,0" VerticalAlignment="Top"/>
-        <Label Content="Гос. Номер" HorizontalAlignment="Left" Margin="92,190,0,0" VerticalAlignment="Top"/>
-        <Label Content="Дата выпуска" HorizontalAlignment="Left" Margin="92,251,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" IsReadOnly="{Binding IsReadOnly}" Text="{Binding NameClient}" Margin="113,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding StateNumber}" Margin="113,221,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Добавить нового клиента" IsEnabled="{Binding IsAddButtonEnable}"  Command="{Binding AddCommand}" HorizontalAlignment="Left" Margin="92,356,0,0" VerticalAlignment="Top" Width="163" Height="26"/>
+        <Label Content="ФИО" HorizontalAlignment="Left" Margin="113,22,0,0" VerticalAlignment="Top"/>
+        <Label Content="Марка машины" HorizontalAlignment="Left" Margin="113,77,0,0" VerticalAlignment="Top"/>
+        <Label Content="Модель машины" HorizontalAlignment="Left" Margin="113,131,0,0" VerticalAlignment="Top"/>
+        <Label Content="Гос. Номер" HorizontalAlignment="Left" Margin="113,190,0,0" VerticalAlignment="Top"/>
+        <Label Content="Дата выпуска" HorizontalAlignment="Left" Margin="113,251,0,0" VerticalAlignment="Top"/>
 
-        <ComboBox x:Name="CarModel" ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedCarModel}" HorizontalAlignment="Left" DisplayMemberPath="NameModel" Margin="92,162,0,0" VerticalAlignment="Top" Width="120"/>
-        <ComboBox x:Name="CarBrand" ItemsSource="{Binding CarBrands}" SelectedItem="{Binding SelectedCarBrand}" HorizontalAlignment="Left" DisplayMemberPath="NameCarBrand" Margin="92,108,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="CarModel" ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedCarModel}" HorizontalAlignment="Left" DisplayMemberPath="NameModel" Margin="113,162,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="CarBrand" ItemsSource="{Binding CarBrands}" SelectedItem="{Binding SelectedCarBrand}" HorizontalAlignment="Left" DisplayMemberPath="NameCarBrand" Margin="113,108,0,0" VerticalAlignment="Top" Width="120"/>
 
-        <DataGrid x:Name="AutoConcerns" Width="600" Height="350" SelectedItem = "{Binding SelectedAutoConcern}" Margin="249,29,10,120" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding AutoConcerns}" SelectionMode="Single">
+        <DataGrid x:Name="AutoConcerns" Width="600" Height="350" SelectedItem = "{Binding SelectedCar}" Margin="249,29,10,120" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Cars}" SelectionMode="Single">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ФИО клиента" Binding="{Binding NameAutoConcern}" Width="*"/>
-                <DataGridTextColumn Header="Марка машины" Width="*" Binding="{Binding IdcountryNavigation.NameCountry}"/>
-                <DataGridTextColumn Header="Модель машины" Binding="{Binding NameAutoConcern}" Width="*"/>
-                <DataGridTextColumn Header="Гос. номер" Binding="{Binding NameAutoConcern}" Width="*"/>
-                <DataGridTextColumn Header="Дата выпуска" Binding="{Binding NameAutoConcern}" Width="*"/>
+                <DataGridTextColumn Header="ФИО клиента" Binding="{Binding IdclientNavigation.NameClient}" Width="*"/>
+                <DataGridTextColumn Header="Марка машины" Width="*" Binding="{Binding IdmodelNavigation.IdcarBrandNavigation.NameCarBrand}"/>
+                <DataGridTextColumn Header="Модель машины" Binding="{Binding IdmodelNavigation.NameModel}" Width="*"/>
+                <DataGridTextColumn Header="Гос. номер" Binding="{Binding StateNumber}" Width="*"/>
+                <DataGridTextColumn Header="Дата выпуска" Binding="{Binding DataOfRelease,StringFormat=\{0:dd.MM.yy\}}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button Content="Добавить еще машину клиенту" 
-            Command="{Binding ToAddingClient}" 
-            HorizontalAlignment="Left" Margin="92,438,0,0" VerticalAlignment="Top" Width="183" Height="26"/>
-        <Button Content="Удалить" 
-            IsEnabled="{Binding IsEnable}" 
-            Command="{Binding DeletingAutoconcern}"
-            HorizontalAlignment="Left" Margin="305,438,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
-        <DatePicker HorizontalAlignment="Left" SelectedDate="{Binding Date}" Margin="92,282,0,0" VerticalAlignment="Top" Width="120" Height="28"/>
+            Command="{Binding AddNewCarToClient}" 
+               IsEnabled="{Binding IsAddNewCarButtonEnable}"
+            HorizontalAlignment="Left" Margin="92,407,0,0" VerticalAlignment="Top" Width="193" Height="26"/>
+        <Button Content="Сбросить все"
+            IsEnabled="{Binding IsFilterButtonEnable}"
+            Command="{Binding ResetFilters}"
+            HorizontalAlignment="Left" Margin="751,407,0,0" VerticalAlignment="Top" Width="118" Height="26"/>
+        <DatePicker HorizontalAlignment="Left" SelectedDate="{Binding Date}" Margin="113,282,0,0" VerticalAlignment="Top" Width="120" Height="28"/>
+        <Label Content="Поиск по ФИО" HorizontalAlignment="Left" Margin="348,386,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding NameClientFilter}" Margin="348,420,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Поиск по гос.номеру" HorizontalAlignment="Left" Margin="506,386,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding StateNumberFilter}" Margin="506,420,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Поиск" Command="{Binding SearchCommand}" HorizontalAlignment="Left" Margin="660,418,0,0" VerticalAlignment="Top" Width="50" Height="20"/>
     </Grid>
 </UserControl>

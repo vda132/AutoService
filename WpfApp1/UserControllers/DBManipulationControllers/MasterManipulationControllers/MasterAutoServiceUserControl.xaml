@@ -3,10 +3,48 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.MasterManipulationControllers"
+             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.MasterManipulationControllers" xmlns:dbmastermanipulationviewmodel="clr-namespace:WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewModel" d:DataContext="{d:DesignInstance Type=dbmastermanipulationviewmodel:MasterAutoServiceViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
-            
+        <DataGrid x:Name="AutoConcerns" Width="600" Height="350" SelectedItem = "{Binding SelectedCar}"  Margin="299,32,0,122" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding AutoServices}" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ФИО клиента" Binding="{Binding StateNumberNavigation.IdclientNavigation.NameClient}" Width="*"/>
+                <DataGridTextColumn Header="Марка машины" Width="*" Binding="{Binding StateNumberNavigation.IdmodelNavigation.IdcarBrandNavigation.NameCarBrand}"/>
+                <DataGridTextColumn Header="Модель машины" Binding="{Binding StateNumberNavigation.IdmodelNavigation.NameModel}" Width="*"/>
+                <DataGridTextColumn Header="Гос. номер" Binding="{Binding StateNumber}" Width="*"/>
+                <DataGridTextColumn Header="Дата обслуживания" Binding="{Binding DateAutoService, StringFormat=\{0:dd.MM.yy\}}" Width="*"/>
+                <DataGridTextColumn Header="Тип обслуживания" Binding="{Binding IdserviceTypeNavigation.NameServiceType}" Width="*"/>
+                <DataGridTextColumn Header="Стоимость" Binding="{Binding Price}" Width="*"/>
+                <DataGridTextColumn Header="Обслужил" Binding="{Binding IdworkerNavigation.NameWorker}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Label Content="Выберите клиента" HorizontalAlignment="Left" Margin="169,78,0,0" VerticalAlignment="Top"/>
+        <ComboBox HorizontalAlignment="Left" IsEnabled="{Binding IsClientEnable}" ItemsSource="{Binding Clients}" DisplayMemberPath="NameClient" SelectedItem="{Binding SelectedClient}" Margin="169,104,0,0" VerticalAlignment="Top" Width="131" RenderTransformOrigin="0.511,0.489"/>
+        <Label Content="Фильтр по фамилии" HorizontalAlignment="Left" Margin="18,78,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" IsReadOnly="{Binding IsReadOnly}" Margin="18,104,0,0" Text="{Binding NameClientFilter}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="22"/>
+        <Label Content="Выберите марку" HorizontalAlignment="Left" Margin="169,136,0,0" VerticalAlignment="Top"/>
+        <ComboBox HorizontalAlignment="Left" IsEnabled="{Binding IsBrandEnable}" ItemsSource="{Binding CarBrands}" DisplayMemberPath="NameCarBrand" SelectedItem="{Binding SelectedCarBrand}"  Margin="169,162,0,0" VerticalAlignment="Top" Width="131"/>
+        <Label Content="Фильтр по марке" HorizontalAlignment="Left" Margin="19,136,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" IsReadOnly="{Binding IsReadOnly}" IsEnabled="{Binding IsBrandEnable}" Margin="19,162,0,0" Text="{Binding NameMarkFilter}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="22"/>
+        <Label Content="Выберите модель" HorizontalAlignment="Left" Margin="169,193,0,0" VerticalAlignment="Top"/>
+        <ComboBox HorizontalAlignment="Left" IsEnabled="{Binding IsModelEnable}" Margin="169,219,0,0" ItemsSource="{Binding Models}" DisplayMemberPath="NameModel" SelectedItem="{Binding SelectedModel}" VerticalAlignment="Top" Width="131"/>
+        <Label Content="Фильтр по модели" HorizontalAlignment="Left" Margin="19,193,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" IsReadOnly="{Binding IsReadOnly}" IsEnabled="{Binding IsModelEnable}" Margin="19,219,0,0" Text="{Binding NameModelFilter}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="22"/>
+        <Label Content="Выберите гос.номер" HorizontalAlignment="Left" Margin="169,250,0,0" VerticalAlignment="Top"/>
+        <ComboBox HorizontalAlignment="Left" IsEnabled="{Binding IsStateNumberEnable}" ItemsSource="{Binding StateNumbers}" DisplayMemberPath="StateNumber" SelectedItem="{Binding SelectedStateNumber}" Margin="169,276,0,0" VerticalAlignment="Top" Width="131"/>
+        <Label Content="Выберите тип обслуживания" HorizontalAlignment="Left" Margin="169,312,0,0" VerticalAlignment="Top"/>
+        <ComboBox HorizontalAlignment="Left" Margin="169,338,0,0" IsEnabled="{Binding IsServiceTypeEnable}" ItemsSource="{Binding ServiceTypes}" DisplayMemberPath="NameServiceType" SelectedItem="{Binding SelectedServiceType}" VerticalAlignment="Top" Width="131"/>
+        <Label Content="Выберите деталь" Visibility="{Binding Visibility}" HorizontalAlignment="Left" Margin="169,437,0,0" VerticalAlignment="Top"/>
+        <Label Content="Дата обслуживания" HorizontalAlignment="Left" Margin="169,369,0,0" VerticalAlignment="Top"/>
+        <DatePicker HorizontalAlignment="Left" SelectedDate="{Binding Date}" Margin="169,400,0,0" VerticalAlignment="Top" Width="131" Height="28"/>
+        <ComboBox HorizontalAlignment="Left" SelectedItem="{Binding SelectedAutoPart}" Visibility="{Binding Visibility}" Margin="169,463,0,0" ItemsSource="{Binding AutoParts}" DisplayMemberPath="NameAutoPart" VerticalAlignment="Top" Width="131"/>
+        <Button Content="Добавить информация о ремонте" Command="{Binding AddAutoPartToService}" IsEnabled="{Binding IsEnable}" Visibility="{Binding Visibility}" HorizontalAlignment="Left" Margin="156,500,0,0" VerticalAlignment="Top" Height="25" Width="196"/>
+        <Button Content="Завершить добавление" Command="{Binding EndAddingAutoPartToService}" Visibility="{Binding Visibility}" IsEnabled="{Binding IsEnableEndButton}" HorizontalAlignment="Left" Margin="370,500,0,0" VerticalAlignment="Top" Height="25" Width="196"/>
+        <Button Content="Добавить обслуживание" Command="{Binding AddService}" IsEnabled="{Binding IsAddingButtonEnable}" HorizontalAlignment="Left" Margin="318,459,0,0" VerticalAlignment="Top" Height="25" Width="196"/>
+        <Label Content="Фильтр по детали" Visibility="{Binding Visibility}" HorizontalAlignment="Left" Margin="19,437,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Visibility="{Binding Visibility}" Margin="19,463,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="22"/>
+        <Button Content="Сбросить" HorizontalAlignment="Left" Margin="883,459,0,0" IsEnabled="{Binding IsResetButtonEnable}" VerticalAlignment="Top" Height="25" Width="97" Command="{Binding ResetCommand}"/>
+
     </Grid>
 </UserControl>

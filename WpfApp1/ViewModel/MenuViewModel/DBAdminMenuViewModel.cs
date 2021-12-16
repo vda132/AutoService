@@ -44,6 +44,10 @@ namespace WpfApp1.ViewModel.MenuViewModel
         {
             CurrentViewModel = Navigation.DBAdminNavigation.CurrentViewModel;
         }
+        public override void Dispose()
+        {
+            Navigation.DBAdminNavigation.StateChanged -= NavigationStateChanged;
+        }
     }
 }
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WpfApp1.ViewModel.Abstract
 {
-    abstract class BaseViewModel : INotifyPropertyChanged
+    public class BaseViewModel : INotifyPropertyChanged
     {
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -18,7 +18,7 @@ namespace WpfApp1.ViewModel.Abstract
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
-        internal void Dispose()
+        public virtual void Dispose()
         {
             
         }
