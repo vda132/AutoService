@@ -12,9 +12,9 @@
              xmlns:controllers="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers"
              
              mc:Ignorable="d" 
-             d:DesignHeight="504" d:DesignWidth="899">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
-        <Button x:Name="BackButton" Width="40" Height="20" Margin="-760,-390,0,0" Content="Назад" FontSize="12" Command="{Binding BackButtonCommand}"/>
+        <Button x:Name="BackButton" Width="60" Height="25" Margin="-850,-500,0,0" Content="Назад" FontSize="12" Command="{Binding BackButtonCommand}"/>
         <ContentControl Content="{Binding CurrentViewModel}">
             <ContentControl.Resources>
                 <DataTemplate DataType="{x:Type viewmodel:DBAdministratorViewModel}">

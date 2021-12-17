@@ -5,14 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfApp1.UserControllers" xmlns:viewmodel="clr-namespace:WpfApp1.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:DBAdministratorViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <Grid Margin="-2,4,2,-4">
-        <Button Content="Автоконцерны" Command="{Binding AutoConcernButtonCommnad}" HorizontalAlignment="Left" Margin="114,116,0,0" VerticalAlignment="Top" Height="37" Width="174"/>
-        <Button Content="Марки" Command="{Binding BrandButtonCommnad}" HorizontalAlignment="Left" Margin="322,116,0,0" VerticalAlignment="Top" Height="37" Width="174"/>
-        <Button Content="Запчасти/расходники" Command="{Binding AutoPartButtonCommnad}" HorizontalAlignment="Left" Margin="114,188,0,0" VerticalAlignment="Top" Height="37" Width="174"/>
-        <Button Content="Цены деталей" Command="{Binding AutoPartPriceButtonCommnad}" HorizontalAlignment="Left" Margin="528,188,0,0" VerticalAlignment="Top" Height="37" Width="174"/>
-        <Button Content="Модели" Command="{Binding ModelButtonCommnad}" HorizontalAlignment="Left" Margin="528,116,0,0" VerticalAlignment="Top" Height="37" Width="174"/>
-        <Button Content="Сходимость" Command="{Binding AutoPartModelButtonCommnad}" HorizontalAlignment="Left" Margin="322,188,0,0" VerticalAlignment="Top" Height="37" Width="174"/>
+        <Button Content="Автоконцерны" Command="{Binding AutoConcernButtonCommnad}" HorizontalAlignment="Left" Margin="183,211,0,0" VerticalAlignment="Top" Height="52" Width="191"/>
+        <Button Content="Марки" Command="{Binding BrandButtonCommnad}" HorizontalAlignment="Left" Margin="411,211,0,0" VerticalAlignment="Top" Height="52" Width="191"/>
+        <Button Content="Запчасти/расходники" Command="{Binding AutoPartButtonCommnad}" HorizontalAlignment="Left" Margin="183,312,0,0" VerticalAlignment="Top" Height="51" Width="191"/>
+        <Button Content="Цены деталей" Command="{Binding AutoPartPriceButtonCommnad}" HorizontalAlignment="Left" Margin="638,312,0,0" VerticalAlignment="Top" Height="51" Width="191"/>
+        <Button Content="Модели" Command="{Binding ModelButtonCommnad}" HorizontalAlignment="Left" Margin="638,211,0,0" VerticalAlignment="Top" Height="52" Width="191"/>
+        <Button Content="Сходимость" Command="{Binding AutoPartModelButtonCommnad}" HorizontalAlignment="Left" Margin="411,312,0,0" VerticalAlignment="Top" Height="51" Width="191"/>
 
     </Grid>
 </UserControl>

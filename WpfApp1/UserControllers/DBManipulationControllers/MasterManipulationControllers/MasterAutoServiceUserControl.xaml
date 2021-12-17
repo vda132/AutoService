@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
-        <DataGrid x:Name="AutoConcerns" Width="600" Height="350" SelectedItem = "{Binding SelectedCar}"  Margin="299,32,0,122" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding AutoServices}" SelectionMode="Single">
+        <DataGrid  Width="600" Height="350"  Margin="299,32,0,122" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding AutoServices}" SelectedItem="{Binding SelectedAutoService}" SelectionMode="Single">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ФИО клиента" Binding="{Binding StateNumberNavigation.IdclientNavigation.NameClient}" Width="*"/>
                 <DataGridTextColumn Header="Марка машины" Width="*" Binding="{Binding StateNumberNavigation.IdmodelNavigation.IdcarBrandNavigation.NameCarBrand}"/>
@@ -45,6 +45,5 @@
         <Label Content="Фильтр по детали" Visibility="{Binding Visibility}" HorizontalAlignment="Left" Margin="19,437,0,0" VerticalAlignment="Top"/>
         <TextBox HorizontalAlignment="Left" Visibility="{Binding Visibility}" Margin="19,463,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="22"/>
         <Button Content="Сбросить" HorizontalAlignment="Left" Margin="883,459,0,0" IsEnabled="{Binding IsResetButtonEnable}" VerticalAlignment="Top" Height="25" Width="97" Command="{Binding ResetCommand}"/>
-
     </Grid>
 </UserControl>

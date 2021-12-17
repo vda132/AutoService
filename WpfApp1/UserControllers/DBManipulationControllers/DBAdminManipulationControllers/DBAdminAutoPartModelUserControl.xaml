@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers"
              mc:Ignorable="d" 
-             d:DesignHeight="504" d:DesignWidth="899">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
         <DataGrid x:Name="AutoConcerns"  Width="600" Height="350" SelectedItem = "{Binding SelectedAutoPart}"   Margin="249,29,10,120" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Compatibilities}" SelectionMode="Single">
             <DataGrid.Columns>

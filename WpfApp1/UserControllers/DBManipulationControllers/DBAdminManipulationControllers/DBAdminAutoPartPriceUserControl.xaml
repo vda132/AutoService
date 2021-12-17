@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers"
              mc:Ignorable="d" 
-             d:DesignHeight="504" d:DesignWidth="899">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
         <DataGrid x:Name="AutoConcerns"  Width="600" Height="350"  Margin="249,29,10,120" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding AutoPartsPrices}" SelectionMode="Single">
             <DataGrid.Columns>
@@ -22,9 +22,9 @@
         <Button Content="Добавить информацию" Command="{Binding AddInformation}" HorizontalAlignment="Left" Margin="96,417,0,0" VerticalAlignment="Top" Width="168" Height="35"/>
         <DatePicker HorizontalAlignment="Left" SelectedDate="{Binding SelectedDate}" Margin="96,194,0,0" VerticalAlignment="Top">
         </DatePicker>
-        <ComboBox HorizontalAlignment="Left" ItemsSource="{Binding AutoParts}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="NameAutoPart" Margin="390,417,0,0" VerticalAlignment="Top" Width="179" Height="30"/>
-        <Label Content="Фильтрация по названию запчасти." HorizontalAlignment="Left" Margin="390,386,0,0" VerticalAlignment="Top"/>
-        <Button Content="Сбросить фильтр" Command="{Binding ResetFilter}" IsEnabled="{Binding IsEnableFilter}" HorizontalAlignment="Left" Margin="657,417,0,0" VerticalAlignment="Top" Height="30" Width="133"/>
+        <ComboBox HorizontalAlignment="Left" ItemsSource="{Binding AutoParts}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="NameAutoPart" Margin="390,471,0,0" VerticalAlignment="Top" Width="179" Height="30"/>
+        <Label Content="Фильтрация по названию запчасти." HorizontalAlignment="Left" Margin="390,434,0,0" VerticalAlignment="Top"/>
+        <Button Content="Сбросить фильтр" Command="{Binding ResetFilter}" IsEnabled="{Binding IsEnableFilter}" HorizontalAlignment="Left" Margin="658,471,0,0" VerticalAlignment="Top" Height="30" Width="133"/>
 
 
     </Grid>

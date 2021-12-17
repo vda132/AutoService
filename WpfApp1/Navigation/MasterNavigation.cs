@@ -37,7 +37,7 @@ namespace WpfApp1.Navigation
         {
             Navigate(new MasterAutoServiceViewModel());
         }
-        public static void ToMasterReport()
+        public static void ToReport()
         {
             Navigate(new MasterReportViewModel());
         }

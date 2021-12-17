@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DirectorManipulationControllers"
              xmlns:Components="clr-namespace:WpfApp1.Components" x:Class="WpfApp1.UserControllers.DBManipulationControllers.DirectorManipulationControllers.DirectorWorkersUserControl"
              mc:Ignorable="d" 
-             d:DesignHeight="504" d:DesignWidth="899">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
         <DataGrid x:Name="AutoConcerns" Width="600" Height="350" SelectedItem = "{Binding SelectedWorker}" Margin="249,29,10,120" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Workers}" SelectionMode="Single">
             <DataGrid.Columns>
@@ -19,11 +19,11 @@
         <Button Content="Добавить" 
             Command="{Binding AddWorker}" 
                 IsEnabled="{Binding IsAddingButtonEnable}"
-            HorizontalAlignment="Left" Margin="180,421,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
+            HorizontalAlignment="Left" Margin="180,440,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
         <Button Content="Удалить" 
             IsEnabled="{Binding IsEnable}" 
             Command="{Binding DeleteCommand}"
-            HorizontalAlignment="Left" Margin="425,421,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
+            HorizontalAlignment="Left" Margin="422,440,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
 
         <Label VerticalAlignment="Top" Margin="46,75,0,0" HorizontalAlignment="Left" Content="Введите ФИО сотрудника"/>
         <TextBox Width="178" VerticalAlignment="Top" TextWrapping="Wrap" Text="{Binding WorkerName}" Margin="46,106,0,0" Height="26" HorizontalAlignment="Left"/>
@@ -33,8 +33,9 @@
         <TextBox Width="178" VerticalAlignment="Top" TextWrapping="Wrap" Text="{Binding WorkerLogin}" Margin="46,254,0,0" Height="26" HorizontalAlignment="Left"/>
         <Label VerticalAlignment="Top" Margin="46,298,0,0" HorizontalAlignment="Left" Content="Введите пароль данного сотрудника"/>
         <Components:BindablePasswordBox
-            Password="{Binding WorkerPassword}" Margin="33,325,646,107"  />
-        <Button Content="Редактировать" Command="{Binding EditWorker}" IsEnabled="{Binding IsEnable}" HorizontalAlignment="Left" Margin="283,421,0,0" VerticalAlignment="Top" Height="26" Width="112"/>
+            Password="{Binding WorkerPassword}" Margin="-16,279,694,153"  />
+        <Button Content="Редактировать" Command="{Binding EditWorker}" IsEnabled="{Binding IsEnable}" HorizontalAlignment="Left" Margin="283,440,0,0" VerticalAlignment="Top" Height="26" Width="112"/>
+        <Button Content="Сбросить все" IsEnabled="{Binding IsResetEnable}" Command="{Binding _ResetAll}" HorizontalAlignment="Left" Margin="529,440,0,0" VerticalAlignment="Top" Height="26" Width="95"/>
 
     </Grid>
 </UserControl>

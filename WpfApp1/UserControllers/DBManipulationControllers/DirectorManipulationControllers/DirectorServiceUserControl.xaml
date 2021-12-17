@@ -5,6 +5,29 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DirectorManipulationControllers"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid/>
+             d:DesignHeight="600" d:DesignWidth="1000">
+    <Grid>
+        <DataGrid  Width="600" Height="350"  Margin="350,80,50,170" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding AutoServices}" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ФИО клиента" Binding="{Binding StateNumberNavigation.IdclientNavigation.NameClient}" Width="*"/>
+                <DataGridTextColumn Header="Марка машины" Width="*" Binding="{Binding StateNumberNavigation.IdmodelNavigation.IdcarBrandNavigation.NameCarBrand}"/>
+                <DataGridTextColumn Header="Модель машины" Binding="{Binding StateNumberNavigation.IdmodelNavigation.NameModel}" Width="*"/>
+                <DataGridTextColumn Header="Гос. номер" Binding="{Binding StateNumber}" Width="*"/>
+                <DataGridTextColumn Header="Дата обслуживания" Binding="{Binding DateAutoService, StringFormat=\{0:dd.MM.yy\}}" Width="*"/>
+                <DataGridTextColumn Header="Тип обслуживания" Binding="{Binding IdserviceTypeNavigation.NameServiceType}" Width="*"/>
+                <DataGridTextColumn Header="Стоимость" Binding="{Binding Price}" Width="*"/>
+                <DataGridTextColumn Header="Обслужил" Binding="{Binding IdworkerNavigation.NameWorker}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Label Content="Выберите клиента" HorizontalAlignment="Left" Margin="169,78,0,0" VerticalAlignment="Top"/>
+        <ComboBox HorizontalAlignment="Left" IsEnabled="{Binding IsClientEnable}" ItemsSource="{Binding Clients}" DisplayMemberPath="NameClient" SelectedItem="{Binding SelectedClient}" Margin="169,104,0,0" VerticalAlignment="Top" Width="131" RenderTransformOrigin="0.511,0.489"/>
+        <Label Content="Фильтр по фамилии" HorizontalAlignment="Left" Margin="18,78,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="18,104,0,0" Text="{Binding NameClientFilter}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="22"/>
+        <Label Content="Выберите сотрудника" HorizontalAlignment="Left" Margin="169,155,0,0" VerticalAlignment="Top"/>
+        <ComboBox HorizontalAlignment="Left" ItemsSource="{Binding Masters}" DisplayMemberPath="NameWorker" SelectedItem="{Binding SelectedMaster}" Margin="169,181,0,0" VerticalAlignment="Top" Width="131" RenderTransformOrigin="0.511,0.489"/>
+        <Label Content="Фильтр по фамилии" HorizontalAlignment="Left" Margin="18,155,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="18,181,0,0" Text="{Binding NameMasterFilter}" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="22"/>
+        <Button Content="Поиск" HorizontalAlignment="Left" Margin="18,235,0,0" VerticalAlignment="Top" Height="29" Width="78"/>
+        <Button Content="Сбросить все" HorizontalAlignment="Left" Margin="169,236,0,0" VerticalAlignment="Top" Height="29" Width="92"/>
+    </Grid>
 </UserControl>

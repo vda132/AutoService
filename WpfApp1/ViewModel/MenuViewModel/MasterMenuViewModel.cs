@@ -10,6 +10,7 @@ namespace WpfApp1.ViewModel.MenuViewModel
 
     class MasterMenuViewModel : BaseViewModel
     {
+        private static bool isBackButonEnable=true;
         RelayCommand backButtonCommand;
         private BaseViewModel currentViewModel;
         public BaseViewModel CurrentViewModel

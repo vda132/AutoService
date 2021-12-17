@@ -3,10 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.MasterManipulationControllers"
+             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.MasterManipulationControllers" xmlns:dbmastermanipulationviewmodel="clr-namespace:WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewModel" d:DataContext="{d:DesignInstance Type=dbmastermanipulationviewmodel:MasterReportViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
-            
+        <DataGrid x:Name="AutoConcerns" Width="600" Height="350" Margin="320,80,80,170" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding DisplayAutoServiceAutoParts}" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ФИО клиента" Binding="{Binding IdautoServiceNavigation.StateNumberNavigation.IdclientNavigation.NameClient}" Width="*"/>
+                <DataGridTextColumn Header="Марка машины" Width="*" Binding="{Binding IdautoServiceNavigation.StateNumberNavigation.IdmodelNavigation.IdcarBrandNavigation.NameCarBrand}"/>
+                <DataGridTextColumn Header="Модель машины" Binding="{Binding IdautoServiceNavigation.StateNumberNavigation.IdmodelNavigation.NameModel}" Width="*"/>
+                <DataGridTextColumn Header="Гос. номер" Binding="{Binding IdautoServiceNavigation.StateNumberNavigation.StateNumber}" Width="*"/>
+                <DataGridTextColumn Header="Дата выпуска" Binding="{Binding IdautoServiceNavigation.DateAutoService, StringFormat=\{0:dd.MM.yy\}}" Width="*"/>
+                <DataGridTextColumn Header="Запчасть" Binding="{Binding IdautoPartNavigation.NameAutoPart}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Label Content="Введите номер обслуживания" HorizontalAlignment="Left" Margin="115,121,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="115,152,0,0" Text="{Binding NumberService}" TextWrapping="Wrap" VerticalAlignment="Top" Width="177" Height="23"/>
+        <Button Content="Поиск" Command="{Binding FindCommand}" HorizontalAlignment="Left" Margin="115,201,0,0" VerticalAlignment="Top" Height="27" Width="112"/>
+        <Button Content="Сбросить все" IsEnabled="{Binding IsEnable}" Command="{Binding ResetCommand}" HorizontalAlignment="Left" Margin="115,255,0,0" VerticalAlignment="Top" Height="30" Width="112"/>
+
     </Grid>
 </UserControl>

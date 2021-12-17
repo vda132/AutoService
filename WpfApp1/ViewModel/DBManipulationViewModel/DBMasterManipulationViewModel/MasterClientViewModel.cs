@@ -29,6 +29,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
         string stateNumberFilter;
         RelayCommand resetFilters;
         RelayCommand searchCommand;
+        bool isFilterButtonEnable = false;
         public MasterClientViewModel()
         {
             SetProperties();
@@ -62,7 +63,8 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             IsReadOnly = false;
             IsAddNewCarButtonEnable = false;
             NameClientFilter = null;
-            StateNumberFilter = null; 
+            StateNumberFilter = null;
+            IsFilterButtonEnable = false;
         }
 
         public Car SelectedCar
@@ -74,6 +76,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 OnPropertyChanged(nameof(SelectedCar));
                 if (selectedCar != null)
                 {
+                    IsFilterButtonEnable = true;
                     IsAddButtonEnable = false;
                     IsAddNewCarButtonEnable = true;
                     NameClient = selectedCar.IdclientNavigation.NameClient;
@@ -117,6 +120,10 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             {
                 stateNumberFilter = value;
                 OnPropertyChanged(nameof(StateNumberFilter));
+                if (stateNumberFilter != null)
+                {
+                    IsFilterButtonEnable = true;
+                }
                 
             }
         }
@@ -127,7 +134,10 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             {
                 nameClientFilter = value;
                 OnPropertyChanged(nameof(NameClientFilter));
-               
+                if (nameClientFilter != null)
+                {
+                    IsFilterButtonEnable = true;
+                }
             }
         }
         public string NameClient
@@ -137,6 +147,10 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             {
                 nameClient = value;
                 OnPropertyChanged(nameof(NameClient));
+                if (nameClient != null)
+                {
+                   IsFilterButtonEnable = true;
+                }
             }
         }
 
@@ -184,7 +198,10 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 selectedCarBrand = value;
                 OnPropertyChanged(nameof(SelectedCarBrand));
                 if(selectedCarBrand!=null)
+                {
+                    IsFilterButtonEnable = true;
                     Models = AutoServiceContext.GetContext().Models.Where(A => A.IdcarBrand == selectedCarBrand.IdcarBrand).ToList();
+                }
             }
         }
         public Model SelectedCarModel
@@ -195,7 +212,10 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 selectedCarModel = value;
                 OnPropertyChanged(nameof(SelectedCarModel));
                 if (SelectedCarModel != null&&!IsReadOnly)
+                {
+                    IsFilterButtonEnable = true;
                     IsAddButtonEnable = true;
+                }
             }
         }
         public DateTime Date
@@ -211,6 +231,15 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                     date=DateTime.Now;
                     return;
                 }
+            }
+        }
+        public bool IsFilterButtonEnable
+        {
+            get => isFilterButtonEnable;
+            set
+            {
+                isFilterButtonEnable = value;
+                OnPropertyChanged(nameof(IsFilterButtonEnable));
             }
         }
         public RelayCommand AddCommand
@@ -230,7 +259,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                           if (String.IsNullOrWhiteSpace(stateNumber))
                               errors.AppendLine("Укажите гос.номер автомобиля.");
                           if (AutoServiceContext.GetContext().Cars.FirstOrDefault(A => A.StateNumber == stateNumber) != null)
-                              errors.AppendLine("Такая машина уже существует.");
+                              errors.AppendLine("Такой гос.номер уже существует.");
                           if (date.ToString() == "")
                               errors.AppendLine("Введите дату.");
                           if (errors.Length > 0)

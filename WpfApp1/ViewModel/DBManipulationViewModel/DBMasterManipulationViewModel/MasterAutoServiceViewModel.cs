@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using WpfApp1.Navigation;
 using WpfApp1.ViewModel.Abstract;
+using WpfApp1.ViewModel.MenuViewModel;
 
 namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewModel
 {
@@ -17,6 +19,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
         List<CarBrand> carBrands;
         CarBrand selectedCarBrand;
         AutoService service;
+        AutoService selectedAutoService;
         List<Model> models;
         Model selectedModel;
         List<ServiceType> serviceTypes = AutoServiceContext.GetContext().ServiceTypes.ToList();
@@ -26,11 +29,13 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
         List<Car> stateNumbers;
         Car selectedStateNumber;
         Visibility visibility = Visibility.Hidden;
+        Visibility visibilityReportButton = Visibility.Hidden;
         DateTime date = DateTime.Now;
         RelayCommand addService;
         RelayCommand addAutoPartToService;
         RelayCommand endAddingAutoPartToService;
         RelayCommand resetCommand;
+        RelayCommand reporButtonCommnad;
         decimal priceForRepairs;
         string nameClientFilter;
         string nameMarkFilter;
@@ -79,7 +84,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             SelectedCarBrand = null;
             SelectedModel = null;
             SelectedStateNumber = null;
-            ServiceTypes = null;
+            SelectedServiceType = null;
             Date = DateTime.Now;
             Visibility = Visibility.Hidden;
             NameAutoPartFilter = null;
@@ -126,14 +131,20 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 if (selectedClient != null)
                 {
                     List<CarBrand> tmp = new List<CarBrand>();
+                    List<Model> tmpModel = new List<Model>();
+                    List<Car> tmpStateNumber = new List<Car>();
                     var clientCars = AutoServiceContext.GetContext().Cars.Where(A => A.Idclient == selectedClient.Idclient).ToList();
                     foreach (var brand in clientCars)
                     {
                         brand.IdmodelNavigation = AutoServiceContext.GetContext().Models.FirstOrDefault(A => A.Idmodel == brand.Idmodel);
+                        tmpModel.Add(brand.IdmodelNavigation);
                         brand.IdmodelNavigation.IdcarBrandNavigation = AutoServiceContext.GetContext().CarBrands.FirstOrDefault(A => A.IdcarBrand == brand.IdmodelNavigation.IdcarBrand);
                         tmp.Add(AutoServiceContext.GetContext().CarBrands.FirstOrDefault(A => A == brand.IdmodelNavigation.IdcarBrandNavigation));
+                        tmpStateNumber.Add(AutoServiceContext.GetContext().Cars.FirstOrDefault(A => A.StateNumber == brand.StateNumber));
                     }
+                    StateNumbers = tmpStateNumber.Distinct().ToList();
                     CarBrands = tmp.Distinct().ToList();
+                    Models = tmpModel.Distinct().ToList();
                     IsResetButtonEnable = true;
                     IsBrandEnable = true;
                 }
@@ -158,12 +169,15 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 if (selectedCarBrand != null && selectedClient != null)
                 {
                     List<Model> tmp = new List<Model>();
+                    List<Car> tmpStateNumber = new List<Car>();
                     var models = AutoServiceContext.GetContext().Models.ToList();
                     var clientCars = AutoServiceContext.GetContext().Cars.Where(A => A.Idclient == selectedClient.Idclient&&A.IdmodelNavigation.IdcarBrandNavigation.IdcarBrand==selectedCarBrand.IdcarBrand).ToList();
                     foreach (var tmpt in clientCars)
                     {
+                        tmpStateNumber.Add(AutoServiceContext.GetContext().Cars.FirstOrDefault(A => A.StateNumber == tmpt.StateNumber));
                         tmp.Add(AutoServiceContext.GetContext().Models.FirstOrDefault(A => A.Idmodel == tmpt.Idmodel));
                     }
+                    StateNumbers = tmpStateNumber.Distinct().ToList();
                     Models = tmp.Distinct().ToList();
                     IsResetButtonEnable = true;
                     IsModelEnable = true;
@@ -346,6 +360,29 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 }
             }
         }
+        public AutoService SelectedAutoService
+        {
+            get => selectedAutoService;
+            set
+            {
+                selectedAutoService = value;
+                OnPropertyChanged(nameof(SelectedAutoService));
+                VisibilityReportButton = Visibility.Hidden;
+                if (selectedAutoService != null && selectedAutoService.Idworker==Navigation.MasterNavigation.UserId && selectedAutoService.IdserviceType==AutoServiceContext.GetContext().ServiceTypes.FirstOrDefault(A=>A.NameServiceType=="Ремонт").IdserviceType)
+                {
+                    VisibilityReportButton = Visibility.Visible;
+                }
+            }
+        }
+        public Visibility VisibilityReportButton
+        {
+            get => visibilityReportButton;
+            set
+            {
+                visibilityReportButton = value;
+                OnPropertyChanged(nameof(VisibilityReportButton));
+            }
+        }
         public List<ServiceType> ServiceTypes
         {
             get => serviceTypes;
@@ -492,6 +529,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                               {
                                   MessageBox.Show(ex.Message.ToString());
                               }
+                              ResetAll();
                           }
                           else
                           {
@@ -510,7 +548,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                                 MessageBox.Show(ex.Message.ToString());
                               }
                           }
-                          ResetAll();
+                          
 
 
                       }
@@ -593,5 +631,6 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 }));
             }
         }
+        
     }
 }

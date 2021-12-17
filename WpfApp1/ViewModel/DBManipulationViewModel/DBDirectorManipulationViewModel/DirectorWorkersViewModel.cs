@@ -22,7 +22,9 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
         Worker selectedWorker;
         RelayCommand deleteCommand;
         RelayCommand editWorker;
+        RelayCommand resetAll;
         bool isEnable;
+        bool isResetEnable;
         public DirectorWorkersViewModel()
         {
             SetProperties();
@@ -47,6 +49,18 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
             {
                 workerName = value;
                 OnPropertyChanged(nameof(WorkerName));
+                if (workerName != null)
+                    IsResetEnable = true;
+            }
+        }
+
+        public bool IsResetEnable
+        {
+            get => isResetEnable;
+            set
+            {
+                isResetEnable = value;
+                OnPropertyChanged(nameof(IsResetEnable));
             }
         }
 
@@ -66,6 +80,8 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
             {
                 workerLogin = value;
                 OnPropertyChanged(nameof(WorkerLogin));
+                if (workerLogin != null)
+                    IsResetEnable = true;
             }
         }
         public string WorkerPassword
@@ -75,6 +91,8 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
             {
                 workerPassword = value;
                 OnPropertyChanged(nameof(WorkerPassword));
+                if (workerPassword != null)
+                    IsResetEnable = true;
             }
         }
         public List<Position> Positions
@@ -93,6 +111,8 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
             {
                 selectedPosition = value;
                 OnPropertyChanged(nameof(SelectedPosition));
+                if (selectedPosition != null)
+                    IsResetEnable = true;
             }
         }
 
@@ -104,6 +124,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
             WorkerPassword = null;
             WorkerName = null;
             SelectedPosition = null;
+            IsResetEnable = false;
        }
         
         public RelayCommand AddWorker
@@ -261,6 +282,17 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
                               Workers = displayWorkers;
                           }
                       }));
+            }
+        }
+        public RelayCommand _ResetAll
+        {
+            get
+            {
+                return resetAll ?? 
+                    (resetAll = new RelayCommand((o) =>
+                {
+                    ResetAll();
+                }));
             }
         }
     }

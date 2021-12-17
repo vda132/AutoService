@@ -5,11 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfApp1.UserControllers" xmlns:viewmodel="clr-namespace:WpfApp1.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MasterViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Button Content="Клиенты" Command="{Binding ClientButtonCommnad}"  HorizontalAlignment="Left" Margin="148,103,0,0" VerticalAlignment="Top" Height="54" Width="167"/>
-        <Button Content="Обслуживание" Command="{Binding AutoServiceButtonCommnad}" HorizontalAlignment="Left" Margin="481,103,0,0" VerticalAlignment="Top" Height="54" Width="167"/>
-        <Button Content="Учет заменяемости" Command="{Binding ReporButtonCommnad}" HorizontalAlignment="Center" Margin="0,259,0,0" VerticalAlignment="Top" Height="54" Width="168"/>
+             d:DesignHeight="600" d:DesignWidth="1000">
+    <Grid RenderTransformOrigin="0.515,0.505">
+        <Button Content="Клиенты" Command="{Binding ClientButtonCommnad}"  HorizontalAlignment="Left" Margin="215,192,0,0" VerticalAlignment="Top" Height="73" Width="180"/>
+        <Button Content="Обслуживание" Command="{Binding AutoServiceButtonCommnad}" HorizontalAlignment="Left" Margin="596,192,0,0" VerticalAlignment="Top" Height="73" Width="180" RenderTransformOrigin="0.538,0.529"/>
+        <Button Content="Учет заменяемости ремонтов" Command="{Binding ReportButton}" HorizontalAlignment="Center" Margin="0,300,0,0" VerticalAlignment="Top" Height="72" Width="180"/>
 
     </Grid>
 </UserControl>

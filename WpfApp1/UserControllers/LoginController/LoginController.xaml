@@ -5,14 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfApp1.UserControllers" xmlns:components="clr-namespace:WpfApp1.Components" xmlns:viewmodel="clr-namespace:WpfApp1.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:LoginViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="504" d:DesignWidth="899">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
-        <Button Content="Войти" HorizontalAlignment="Left" Margin="311,344,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.838,6.134" Width="168" Height="34" Command="{Binding LoginCommand}"/>
-        <Label Content="Введите логин:&#xD;&#xA;" HorizontalAlignment="Left" Margin="316,59,0,0" VerticalAlignment="Top" Width="151" FontSize="18"/>
-        <TextBox x:Name="loginTextBox" HorizontalAlignment="Left" Margin="306,117,0,0" Text="{Binding UserName}" TextWrapping="Wrap" VerticalAlignment="Top" Width="178" Height="26" AutomationProperties.Name="loginTextBox"/>
-        <Label Content="Введите пароль:" HorizontalAlignment="Left" Margin="316,182,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.179,-0.052" Width="151" FontSize="18"/>
+        <Button Content="Войти" HorizontalAlignment="Center" Margin="0,375,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.838,6.134" Width="168" Height="34" Command="{Binding LoginCommand}"/>
+        <Label Content="Введите логин:&#xD;&#xA;" HorizontalAlignment="Center" Margin="0,98,0,0" VerticalAlignment="Top" Width="151" FontSize="18"/>
+        <TextBox x:Name="loginTextBox" HorizontalAlignment="Center" Margin="0,146,0,0" Text="{Binding UserName}" TextWrapping="Wrap" VerticalAlignment="Top" Width="178" Height="26" AutomationProperties.Name="loginTextBox"/>
+        <Label Content="Введите пароль:" HorizontalAlignment="Center" Margin="0,226,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.179,-0.052" Width="151" FontSize="18"/>
         <components:BindablePasswordBox
-                    Password="{Binding Password}" Margin="238,194,332,160" />
+                    Password="{Binding Password}" Margin="285,185,285,169" />
 
     </Grid>
 </UserControl>

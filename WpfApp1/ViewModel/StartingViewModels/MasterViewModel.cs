@@ -12,7 +12,7 @@ namespace WpfApp1.ViewModel
     {
         RelayCommand clientButtonCommnad;
         RelayCommand autoServiceButtonCommnad;
-        RelayCommand reporButtonCommnad;
+        RelayCommand reportButton;
         public RelayCommand ClientButtonCommnad
         {
             get
@@ -35,14 +35,14 @@ namespace WpfApp1.ViewModel
                       }));
             }
         }
-        public RelayCommand ReporButtonCommnad
+        public RelayCommand ReportButton
         {
             get
             {
-                return reporButtonCommnad ??
-                      (reporButtonCommnad = new RelayCommand((o) =>
+                return reportButton ??
+                      (reportButton = new RelayCommand((o) =>
                       {
-                          MasterNavigation.ToMasterReport();
+                          MasterNavigation.ToReport();
                       }));
             }
         }
