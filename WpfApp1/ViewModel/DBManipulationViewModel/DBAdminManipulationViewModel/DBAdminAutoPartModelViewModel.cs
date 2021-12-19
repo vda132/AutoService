@@ -8,11 +8,20 @@ using WpfApp1.ViewModel.Abstract;
 
 namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
 {
-    class DBAdminAutoPartModelViewModel:BaseViewModel
+    class DBAdminAutoPartModelViewModel : BaseViewModel
     {
         List<Compatibility> compatibilities;
         List<Compatibility> displayCompatibilities;
-
+        RelayCommand resetAll;
+        List<CarBrand> brands = new List<CarBrand>();
+        List<Model> models;
+        List<AutoPart> autoParts = new List<AutoPart>();
+        CarBrand selectedCarBrand;
+        Model selectedModel;
+        Compatibility selectedAutoPartComp;
+        RelayCommand addComp;
+        AutoPart selectedAutoPart;
+        bool isResetEnable = false;
         public DBAdminAutoPartModelViewModel()
         {
             SetProperties();
@@ -20,17 +29,22 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
 
         private void SetProperties()
         {
-            compatibilities = AutoServiceContext.GetContext().Compatibilities.ToList();
-            var models = AutoServiceContext.GetContext().Models.ToList();
-            var brands = AutoServiceContext.GetContext().CarBrands.ToList();
-            var autoParts = AutoServiceContext.GetContext().AutoParts.ToList();
-            foreach (var model in compatibilities)
+            using (var context = new AutoServiceContext())
             {
-                model.IdmodelNavigation = models.FirstOrDefault(A => A.Idmodel == model.Idmodel);
-                model.IdmodelNavigation.IdcarBrandNavigation = brands.FirstOrDefault(A => A.IdcarBrand == model.IdmodelNavigation.IdcarBrand);
-                model.IdautoPartNavigation = autoParts.FirstOrDefault(A=>A.IdautoPart==model.IdautoPart);
+                autoParts = context.AutoParts.ToList();
+                brands = context.CarBrands.ToList();
+                compatibilities = context.Compatibilities.ToList();
+                var _models = context.Models.ToList();
+                var _brands = context.CarBrands.ToList();
+                var _autoParts = context.AutoParts.ToList();
+                foreach (var model in compatibilities)
+                {
+                    model.IdmodelNavigation = _models.FirstOrDefault(A => A.Idmodel == model.Idmodel);
+                    model.IdmodelNavigation.IdcarBrandNavigation = _brands.FirstOrDefault(A => A.IdcarBrand == model.IdmodelNavigation.IdcarBrand);
+                    model.IdautoPartNavigation = _autoParts.FirstOrDefault(A => A.IdautoPart == model.IdautoPart);
+                }
+                Compatibilities = compatibilities;
             }
-            displayCompatibilities = compatibilities;
         }
 
         public List<Compatibility> Compatibilities
@@ -42,35 +56,9 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 OnPropertyChanged(nameof(Compatibilities));
             }
         }
-        RelayCommand toAddingAutoPartModel;
-        List<CarBrand> brands = AutoServiceContext.GetContext().CarBrands.ToList();
-        List<Model> models;
-        List<AutoPart> autoParts = AutoServiceContext.GetContext().AutoParts.ToList();
-        CarBrand selectedCarBrand;
-        Model selectedModel;
-        Compatibility selectedAutoPartComp;
-        RelayCommand addComp;
-        AutoPart selectedAutoPart;
-        private bool isEnable;
-        private bool isEnableDelete;
-        public bool IsEnable
-        {
-            get => isEnable;
-            set
-            {
-                isEnable = value;
-                OnPropertyChanged(nameof(IsEnable));
-            }
-        }
-        public bool IsEnableDelete
-        {
-            get => isEnableDelete;
-            set
-            {
-                isEnableDelete = value;
-                OnPropertyChanged(nameof(IsEnableDelete));
-            }
-        }
+
+
+
         public List<CarBrand> Brands
         {
             get => brands;
@@ -87,10 +75,14 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             {
                 selectedCarBrand = value;
                 OnPropertyChanged(nameof(SelectedCarBrand));
-                if(selectedCarBrand!=null)
+                if (selectedCarBrand != null)
                 {
-                    IsEnable = true;
-                    Models = AutoServiceContext.GetContext().Models.Where(A => A.IdcarBrand == selectedCarBrand.IdcarBrand).ToList();
+                    using (var context = new AutoServiceContext())
+                    {
+
+                        IsResetEnable = true;
+                        Models = context.Models.Where(A => A.IdcarBrand == selectedCarBrand.IdcarBrand).ToList();
+                    }
                 }
             }
         }
@@ -100,7 +92,20 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             set
             {
                 selectedModel = value;
-                OnPropertyChanged(nameof(SelectedCarBrand));
+                OnPropertyChanged(nameof(SelectedModel));
+                if (selectedModel != null)
+                {
+                    IsResetEnable = true;
+                }
+            }
+        }
+        public bool IsResetEnable
+        {
+            get => isResetEnable;
+            set
+            {
+                isResetEnable = value;
+                OnPropertyChanged(nameof(IsResetEnable));
             }
         }
         public List<AutoPart> AutoParts
@@ -120,7 +125,6 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             {
                 selectedAutoPartComp = value;
                 OnPropertyChanged(nameof(SelectedAutoPartComp));
-                IsEnableDelete = true;
             }
         }
         public List<Model> Models
@@ -140,6 +144,10 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             {
                 selectedAutoPart = value;
                 OnPropertyChanged(nameof(SelectedAutoPart));
+                if (selectedAutoPart != null)
+                {
+                    IsResetEnable = true;
+                }
             }
         }
         public RelayCommand AddComp
@@ -149,46 +157,67 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 return addComp ??
                       (addComp = new RelayCommand((o) =>
                       {
-                          StringBuilder errors = new StringBuilder();
-                          if (SelectedAutoPart == null)
-                              errors.AppendLine("Выберете запчасть.");
-                          if (SelectedModel == null)
-                              errors.AppendLine("Выберете модель.");
-                          if (SelectedCarBrand == null)
-                              errors.AppendLine("Выберете марку.");
-                          if(errors.Length>0)
+                          using (var context = new AutoServiceContext())
                           {
-                              MessageBox.Show(errors.ToString(),"Error",MessageBoxButton.OK,MessageBoxImage.Error);
-                              return;
-                          }
-                          Compatibility tmp = new Compatibility()
-                          {
-                              Idmodel = SelectedModel.Idmodel,
-                              IdautoPart = selectedAutoPart.IdautoPart
-                          };
-                          if (AutoServiceContext.GetContext().Compatibilities.FirstOrDefault(A => A == tmp) != null)
-                          {
-                              MessageBox.Show("Такая сходимость уже есть.", "Error", MessageBoxButton.OK);
-                              return;
-                          }
-                              
-                          AutoServiceContext.GetContext().Compatibilities.Add(tmp);
-                          try
-                          {
-                              AutoServiceContext.GetContext().SaveChanges();
-                              MessageBox.Show("Информация сохранена!");
+                              StringBuilder errors = new StringBuilder();
+                              if (SelectedAutoPart == null)
+                                  errors.AppendLine("Выберете запчасть.");
+                              if (SelectedModel == null)
+                                  errors.AppendLine("Выберете модель.");
+                              if (SelectedCarBrand == null)
+                                  errors.AppendLine("Выберете марку.");
+                              if (errors.Length > 0)
+                              {
+                                  MessageBox.Show(errors.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                  return;
+                              }
+                              Compatibility tmp = new Compatibility()
+                              {
+                                  Idmodel = SelectedModel.Idmodel,
+                                  IdautoPart = selectedAutoPart.IdautoPart
+                              };
+                              if (context.Compatibilities.FirstOrDefault(A => A == tmp) != null)
+                              {
+                                  MessageBox.Show("Такая сходимость уже есть.", "Error", MessageBoxButton.OK);
+                                  return;
+                              }
 
+                              context.Compatibilities.Add(tmp);
+                              try
+                              {
+                                  context.SaveChanges();
+                                  MessageBox.Show("Информация сохранена!");
+
+                              }
+                              catch (Exception ex)
+                              {
+                                  MessageBox.Show(ex.Message.ToString());
+                              }
+                              SetProperties();
+                              Compatibilities = displayCompatibilities;
+                              SelectedCarBrand = null;
+                              SelectedModel = null;
+                              SelectedAutoPart = null;
+                              IsResetEnable = false;
                           }
-                          catch (Exception ex)
-                          {
-                              MessageBox.Show(ex.Message.ToString());
-                          }
-                          SetProperties();
-                          Compatibilities = displayCompatibilities;
-                          IsEnable = false;
-                          SelectedAutoPart = null;
                       }
                        ));
+            }
+        }
+        public RelayCommand ResetAll
+        {
+            get
+            {
+                return resetAll ??
+                      (resetAll = new RelayCommand((o) =>
+                      {
+                          SetProperties();
+                          SelectedCarBrand = null;
+                          SelectedModel = null;
+                          SelectedAutoPart = null;
+                          IsResetEnable = false;
+                          Compatibilities = displayCompatibilities;
+                      }));
             }
         }
     }

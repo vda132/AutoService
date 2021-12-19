@@ -8,12 +8,12 @@ using WpfApp1.ViewModel.Abstract;
 
 namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewModel
 {
-    class DirectorWorkersViewModel:BaseViewModel
+    class DirectorWorkersViewModel : BaseViewModel
     {
         string workerName;
         string workerLogin;
         string workerPassword;
-        List<Position> positions = AutoServiceContext.GetContext().Positions.ToList();
+        List<Position> positions = new List<Position>();
         Position selectedPosition;
         RelayCommand addWorker;
         bool isAddingButtonEnable = true;
@@ -32,15 +32,19 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
         private void SetProperties()
         {
             isEnable = false;
-            workers = AutoServiceContext.GetContext().Workers.ToList();
-            var accounts = AutoServiceContext.GetContext().Accounts.ToList();
-            var positions = AutoServiceContext.GetContext().Positions.ToList();
-            foreach (var account in workers)
+            using (var context = new AutoServiceContext())
             {
-                account.Account = accounts.FirstOrDefault(A => A.Idworker == account.Idworker);
-                account.IdpositionNavigation = positions.FirstOrDefault(A => A.Idposition == account.Idposition);
+                workers = context.Workers.ToList();
+                positions = context.Positions.ToList();
+                var accounts = context.Accounts.ToList();
+                var _positions = context.Positions.ToList();
+                foreach (var account in workers)
+                {
+                    account.Account = accounts.FirstOrDefault(A => A.Idworker == account.Idworker);
+                    account.IdpositionNavigation = _positions.FirstOrDefault(A => A.Idposition == account.Idposition);
+                }
+                Workers = workers;
             }
-            displayWorkers = workers;
         }
         public string WorkerName
         {
@@ -116,8 +120,8 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
             }
         }
 
-       private void ResetAll()
-       {
+        private void ResetAll()
+        {
             IsAddingButtonEnable = true;
             IsEnable = false;
             WorkerLogin = null;
@@ -125,8 +129,8 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
             WorkerName = null;
             SelectedPosition = null;
             IsResetEnable = false;
-       }
-        
+        }
+
         public RelayCommand AddWorker
         {
             get
@@ -134,51 +138,54 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
                 return addWorker ??
                       (addWorker = new RelayCommand((o) =>
                       {
-                          StringBuilder errors = new StringBuilder();
-                          if (String.IsNullOrWhiteSpace(workerName))
-                              errors.AppendLine("Укажите ФИО сотрудника.");
-                          if (selectedPosition == null)
-                              errors.AppendLine("Укажите должность сотрудника.");
-                          if (String.IsNullOrWhiteSpace(workerLogin))
-                              errors.AppendLine("Укажите логин сотрудника.");
-                          if (String.IsNullOrWhiteSpace(workerPassword))
-                              errors.AppendLine("Укажите пароль сотрудника.");
-                          if (AutoServiceContext.GetContext().Accounts.FirstOrDefault(A => A.LoginAccount == workerLogin) != null)
-                              errors.AppendLine("Такой логин уже существует");
-                          if (errors.Length > 0)
+                          using (var context = new AutoServiceContext())
                           {
-                              MessageBox.Show(errors.ToString());
-                              return;
-                          }
+                              StringBuilder errors = new StringBuilder();
+                              if (String.IsNullOrWhiteSpace(workerName))
+                                  errors.AppendLine("Укажите ФИО сотрудника.");
+                              if (selectedPosition == null)
+                                  errors.AppendLine("Укажите должность сотрудника.");
+                              if (String.IsNullOrWhiteSpace(workerLogin))
+                                  errors.AppendLine("Укажите логин сотрудника.");
+                              if (String.IsNullOrWhiteSpace(workerPassword))
+                                  errors.AppendLine("Укажите пароль сотрудника.");
+                              if (context.Accounts.FirstOrDefault(A => A.LoginAccount == workerLogin) != null)
+                                  errors.AppendLine("Такой логин уже существует");
+                              if (errors.Length > 0)
+                              {
+                                  MessageBox.Show(errors.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                  return;
+                              }
 
-                          Position tmp = positions.FirstOrDefault(A => A.NamePosition == selectedPosition.NamePosition);
-                          int id = tmp.Idposition;
-                          Worker tmpWork = new Worker() { NameWorker = workerName, Idposition = tmp.Idposition };
-                          AutoServiceContext.GetContext().Workers.Add(tmpWork);
-                          try
-                          {
-                              AutoServiceContext.GetContext().SaveChanges();
+                              Position tmp = positions.FirstOrDefault(A => A.NamePosition == selectedPosition.NamePosition);
+                              int id = tmp.Idposition;
+                              Worker tmpWork = new Worker() { NameWorker = workerName, Idposition = tmp.Idposition };
+                              context.Workers.Add(tmpWork);
+                              try
+                              {
+                                  context.SaveChanges();
+                              }
+                              catch (Exception ex)
+                              {
+                                  MessageBox.Show(ex.Message.ToString());
+                              }
+                              Worker tmpWorkerForAccount = context.Workers.FirstOrDefault(A => A.NameWorker == workerName);
+                              int idWorkerForAccount = tmpWorkerForAccount.Idworker;
+                              Account account = new Account() { Idworker = idWorkerForAccount, LoginAccount = workerLogin, PasswordAccount = workerPassword };
+                              context.Accounts.Add(account);
+                              try
+                              {
+                                  context.SaveChanges();
+                                  MessageBox.Show("Информация сохранена!");
+                              }
+                              catch (Exception ex)
+                              {
+                                  MessageBox.Show(ex.Message.ToString());
+                              }
+                              ResetAll();
+                              SetProperties();
+                              Workers = displayWorkers;
                           }
-                          catch (Exception ex)
-                          {
-                              MessageBox.Show(ex.Message.ToString());
-                          }
-                          Worker tmpWorkerForAccount = AutoServiceContext.GetContext().Workers.FirstOrDefault(A => A.NameWorker == workerName);
-                          int idWorkerForAccount = tmpWorkerForAccount.Idworker;
-                          Account account = new Account() { Idworker = idWorkerForAccount, LoginAccount = workerLogin, PasswordAccount = workerPassword };
-                          AutoServiceContext.GetContext().Accounts.Add(account);
-                          try
-                          {
-                              AutoServiceContext.GetContext().SaveChanges();
-                              MessageBox.Show("Информация сохранена!");
-                          }
-                          catch (Exception ex)
-                          {
-                              MessageBox.Show(ex.Message.ToString());
-                          }
-                          ResetAll();
-                          SetProperties();
-                          Workers = displayWorkers;
                       }
                        ));
             }
@@ -210,7 +217,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
             {
                 selectedWorker = value;
                 OnPropertyChanged(nameof(SelectedWorker));
-                if (selectedWorker != null) 
+                if (selectedWorker != null)
                 {
                     IsAddingButtonEnable = false;
                     IsEnable = true;
@@ -219,7 +226,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
                     WorkerName = SelectedWorker.NameWorker;
                     SelectedPosition = SelectedWorker.IdpositionNavigation;
                 }
-                
+
             }
         }
         public RelayCommand DeleteCommand
@@ -229,26 +236,34 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
                 return deleteCommand ??
                       (deleteCommand = new RelayCommand((o) =>
                       {
-                          if (MessageBox.Show($"Вы точно хотите удалить сотрудника " +
-                              $"{SelectedWorker.NameWorker}?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                          using (var context = new AutoServiceContext())
                           {
-                              try
+                              if (MessageBox.Show($"Вы точно хотите удалить сотрудника " +
+                                  $"{SelectedWorker.NameWorker}?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                               {
-                                  AutoServiceContext.GetContext().Workers.Remove(SelectedWorker);
-                                  MessageBox.Show("Данные удалены.");
-                                  AutoServiceContext.GetContext().SaveChanges();
-                                  workers = AutoServiceContext.GetContext().Workers.ToList();
-                                  Workers = workers;
+                                  if (selectedWorker.Idworker == Navigation.DirectorNavigation.UserId)
+                                  {
+                                      MessageBox.Show("Вы не можете удалить сами себя!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                      return;
+                                  }
+                                  try
+                                  {
+                                      context.Workers.Remove(SelectedWorker);
+                                      MessageBox.Show("Данные удалены.");
+                                      context.SaveChanges();
+                                      workers = context.Workers.ToList();
+                                      Workers = workers;
 
+                                  }
+                                  catch (Exception ex)
+                                  {
+                                      MessageBox.Show(ex.Message);
+                                  }
                               }
-                              catch (Exception ex)
-                              {
-                                  MessageBox.Show(ex.Message);
-                              }
+                              SetProperties();
+                              ResetAll();
+                              Workers = displayWorkers;
                           }
-                          SetProperties();
-                          ResetAll();
-                          Workers = displayWorkers;
                       }));
             }
         }
@@ -259,27 +274,30 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
                 return editWorker ??
                       (editWorker = new RelayCommand((o) =>
                       {
-                          if (MessageBox.Show($"Вы точно хотите редактировать выбранного сотрудника " +
-                              $"{SelectedWorker.NameWorker}?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                          using (var context = new AutoServiceContext())
                           {
-                              try
+                              if (MessageBox.Show($"Вы точно хотите редактировать выбранного сотрудника " +
+                                  $"{SelectedWorker.NameWorker}?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                               {
-                                  Worker tmp = AutoServiceContext.GetContext().Workers.FirstOrDefault(A => A.Idworker == SelectedWorker.Idworker);
-                                  tmp.NameWorker = WorkerName;
-                                  tmp.IdpositionNavigation = selectedPosition;
-                                  tmp.Account.LoginAccount = WorkerLogin;
-                                  tmp.Account.PasswordAccount = WorkerPassword;
-                                  AutoServiceContext.GetContext().Workers.Update(tmp);
-                                  MessageBox.Show("Данные обновлены.");
-                                  AutoServiceContext.GetContext().SaveChanges();
+                                  try
+                                  {
+                                      Worker tmp = context.Workers.FirstOrDefault(A => A.Idworker == SelectedWorker.Idworker);
+                                      tmp.NameWorker = WorkerName;
+                                      tmp.IdpositionNavigation = selectedPosition;
+                                      tmp.Account.LoginAccount = WorkerLogin;
+                                      tmp.Account.PasswordAccount = WorkerPassword;
+                                      context.Workers.Update(tmp);
+                                      MessageBox.Show("Данные обновлены.");
+                                      context.SaveChanges();
+                                  }
+                                  catch (Exception ex)
+                                  {
+                                      MessageBox.Show(ex.Message);
+                                  }
+                                  SetProperties();
+                                  ResetAll();
+                                  Workers = displayWorkers;
                               }
-                              catch (Exception ex)
-                              {
-                                  MessageBox.Show(ex.Message);
-                              }
-                              SetProperties();
-                              ResetAll();
-                              Workers = displayWorkers;
                           }
                       }));
             }
@@ -288,7 +306,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
         {
             get
             {
-                return resetAll ?? 
+                return resetAll ??
                     (resetAll = new RelayCommand((o) =>
                 {
                     ResetAll();

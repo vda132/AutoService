@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfApp1.Models.Enums
+namespace WpfApp1.Exceptions
 {
-    enum Position
+    class FieldException:Exception
     {
-        Director = 1,
-        Worker,
-        DBAdmin
+        public FieldException(string message) : base(message) { }
     }
 }

@@ -26,14 +26,14 @@
             HorizontalAlignment="Left" Margin="422,440,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
 
         <Label VerticalAlignment="Top" Margin="46,75,0,0" HorizontalAlignment="Left" Content="Введите ФИО сотрудника"/>
-        <TextBox Width="178" VerticalAlignment="Top" TextWrapping="Wrap" Text="{Binding WorkerName}" Margin="46,106,0,0" Height="26" HorizontalAlignment="Left"/>
+        <TextBox  VerticalAlignment="Top" TextWrapping="Wrap" Text="{Binding WorkerName}" Margin="46,106,0,0" Width="179" Height="27" HorizontalAlignment="Left"/>
         <Label VerticalAlignment="Top" Margin="46,148,0,0" HorizontalAlignment="Left" Content="Выберете должность сотрудника"/>
-        <ComboBox Width="178" VerticalAlignment="Top" Margin="46,179,0,0" ItemsSource="{Binding Positions}" SelectedItem="{Binding SelectedPosition}" DisplayMemberPath="NamePosition" Height="26" HorizontalAlignment="Left"/>
+        <ComboBox Width="179" Height="27" VerticalAlignment="Top" Margin="46,179,0,0" ItemsSource="{Binding Positions}" SelectedItem="{Binding SelectedPosition}" DisplayMemberPath="NamePosition"  HorizontalAlignment="Left"/>
         <Label VerticalAlignment="Top" Margin="46,223,0,0" HorizontalAlignment="Left" Content="Введите логин данного сотрудника"/>
-        <TextBox Width="178" VerticalAlignment="Top" TextWrapping="Wrap" Text="{Binding WorkerLogin}" Margin="46,254,0,0" Height="26" HorizontalAlignment="Left"/>
+        <TextBox Width="179" Height="27" VerticalAlignment="Top" TextWrapping="Wrap" Text="{Binding WorkerLogin}" Margin="46,254,0,0"  HorizontalAlignment="Left"/>
         <Label VerticalAlignment="Top" Margin="46,298,0,0" HorizontalAlignment="Left" Content="Введите пароль данного сотрудника"/>
         <Components:BindablePasswordBox
-            Password="{Binding WorkerPassword}" Margin="-16,279,694,153"  />
+            Password="{Binding WorkerPassword}" Margin="31,313,746,192"  />
         <Button Content="Редактировать" Command="{Binding EditWorker}" IsEnabled="{Binding IsEnable}" HorizontalAlignment="Left" Margin="283,440,0,0" VerticalAlignment="Top" Height="26" Width="112"/>
         <Button Content="Сбросить все" IsEnabled="{Binding IsResetEnable}" Command="{Binding _ResetAll}" HorizontalAlignment="Left" Margin="529,440,0,0" VerticalAlignment="Top" Height="26" Width="95"/>
 

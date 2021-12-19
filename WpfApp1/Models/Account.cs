@@ -10,6 +10,7 @@ namespace WpfApp1
         public int Idworker { get; set; }
         public string LoginAccount { get; set; }
         public string PasswordAccount { get; set; }
+
         public virtual Worker IdworkerNavigation { get; set; }
     }
 }

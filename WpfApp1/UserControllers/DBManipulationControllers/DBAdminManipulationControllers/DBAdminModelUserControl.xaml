@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers"
+             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers" xmlns:dbadminmanipulationviewmodel="clr-namespace:WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel" d:DataContext="{d:DesignInstance Type=dbadminmanipulationviewmodel:DBAdminModelViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
@@ -15,14 +15,18 @@
         </DataGrid>
         <Button Content="Добавить" 
             Command="{Binding AddCarModel}" 
-            HorizontalAlignment="Left" Margin="178,438,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
-        <TextBox HorizontalAlignment="Left" Text="{Binding ModelName}" Margin="126,90,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+            HorizontalAlignment="Left" Margin="168,467,0,0" VerticalAlignment="Top" Width="88" Height="32"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding ModelName}" Margin="126,110,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Width="159" Height="27"/>
         <ComboBox x:Name="CountriesBox" HorizontalAlignment="Left"  
             ItemsSource="{Binding CarBrands}" 
             DisplayMemberPath="NameCarBrand" 
-            SelectedItem="{Binding SelecteCarBrand}"  Margin="126,212,0,0" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Введите название" HorizontalAlignment="Left" Margin="126,59,0,0" VerticalAlignment="Top"/>
+            SelectedItem="{Binding SelecteCarBrand}"  Margin="126,212,0,0" VerticalAlignment="Top" Width="159" Height="27"/>
+        <Label Content="Введите название" HorizontalAlignment="Left" Margin="126,80,0,0" VerticalAlignment="Top"/>
         <Label Content="Выберете марку" HorizontalAlignment="Left" Margin="126,181,0,0" VerticalAlignment="Top"/>
+        <Button Content="Сбросить все" 
+            Command="{Binding ResetAll}" 
+            IsEnabled="{Binding IsEnable}"
+            HorizontalAlignment="Left" Margin="372,467,0,0" VerticalAlignment="Top" Width="95" Height="32"/>
 
     </Grid>
 </UserControl>

@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
-        <DataGrid x:Name="AutoConcerns" Width="600" Height="350" Margin="320,80,80,170" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding DisplayAutoServiceAutoParts}" SelectionMode="Single">
+        <DataGrid x:Name="AutoConcerns" Margin="315,67,115,212" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding DisplayAutoServiceAutoParts}" SelectionMode="Single">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ФИО клиента" Binding="{Binding IdautoServiceNavigation.StateNumberNavigation.IdclientNavigation.NameClient}" Width="*"/>
                 <DataGridTextColumn Header="Марка машины" Width="*" Binding="{Binding IdautoServiceNavigation.StateNumberNavigation.IdmodelNavigation.IdcarBrandNavigation.NameCarBrand}"/>
@@ -17,10 +17,11 @@
                 <DataGridTextColumn Header="Запчасть" Binding="{Binding IdautoPartNavigation.NameAutoPart}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Label Content="Введите номер обслуживания" HorizontalAlignment="Left" Margin="115,121,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="115,152,0,0" Text="{Binding NumberService}" TextWrapping="Wrap" VerticalAlignment="Top" Width="177" Height="23"/>
-        <Button Content="Поиск" Command="{Binding FindCommand}" HorizontalAlignment="Left" Margin="115,201,0,0" VerticalAlignment="Top" Height="27" Width="112"/>
-        <Button Content="Сбросить все" IsEnabled="{Binding IsEnable}" Command="{Binding ResetCommand}" HorizontalAlignment="Left" Margin="115,255,0,0" VerticalAlignment="Top" Height="30" Width="112"/>
+        <Label Content="Выберите клиента" HorizontalAlignment="Left" Margin="115,121,0,0" VerticalAlignment="Top"/>
+        <Button Content="Сбросить все" IsEnabled="{Binding IsEnable}" Command="{Binding ResetCommand}" HorizontalAlignment="Left" Margin="115,279,0,0" VerticalAlignment="Top" Height="32" Width="112"/>
+        <ComboBox HorizontalAlignment="Left" Margin="115,152,0,0" ItemsSource="{Binding Clients}" SelectedItem="{Binding SelectedClient}" DisplayMemberPath="NameClient" VerticalAlignment="Top" Width="159" Height="27"/>
+        <Label Content="Выберите гос. номер" HorizontalAlignment="Left" Margin="115,195,0,0" VerticalAlignment="Top"/>
+        <ComboBox HorizontalAlignment="Left"  Margin="115,226,0,0" ItemsSource="{Binding StateNumbers}" SelectedItem="{Binding SelectedStateNumber}" DisplayMemberPath="StateNumber" VerticalAlignment="Top" Width="159" Height="27"/>
 
     </Grid>
 </UserControl>

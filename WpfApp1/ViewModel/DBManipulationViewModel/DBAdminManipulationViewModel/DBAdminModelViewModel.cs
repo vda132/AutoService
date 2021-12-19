@@ -8,23 +8,33 @@ using WpfApp1.ViewModel.Abstract;
 
 namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
 {
-    class DBAdminModelViewModel:BaseViewModel
+    class DBAdminModelViewModel : BaseViewModel
     {
         List<Model> carModels;
         List<Model> displaycarModels;
+        CarBrand tmp;
+        List<CarBrand> carBrands = new List<CarBrand>();
+        private string modelName;
+        bool isEnable;
+        RelayCommand addCarModel;
+        RelayCommand resetAll;
         public DBAdminModelViewModel()
         {
             SetProperties();
         }
         private void SetProperties()
         {
-            carModels = AutoServiceContext.GetContext().Models.ToList();
-            var autoBrands = AutoServiceContext.GetContext().CarBrands.ToList();
-            foreach (var brand in carModels)
+            using (var context = new AutoServiceContext())
             {
-                brand.IdcarBrandNavigation = autoBrands.FirstOrDefault(A => A.IdcarBrand == brand.IdcarBrand);
+                carBrands = context.CarBrands.ToList();
+                carModels = context.Models.ToList();
+                var autoBrands = context.CarBrands.ToList();
+                foreach (var brand in carModels)
+                {
+                    brand.IdcarBrandNavigation = autoBrands.FirstOrDefault(A => A.IdcarBrand == brand.IdcarBrand);
+                }
+                CarModels = carModels;
             }
-            displaycarModels = carModels;
         }
         public List<Model> CarModels
         {
@@ -35,10 +45,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 OnPropertyChanged(nameof(CarModels));
             }
         }
-        CarBrand tmp;
-        List<CarBrand> carBrands = AutoServiceContext.GetContext().CarBrands.ToList();
-        private string modelName;
-        RelayCommand addCarModel;
+
         public List<CarBrand> CarBrands
         {
             get => carBrands;
@@ -56,6 +63,19 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             {
                 selecteCarBrand = value;
                 OnPropertyChanged(nameof(SelecteCarBrand));
+                if (selecteCarBrand != null)
+                {
+                    IsEnable = true;
+                }
+            }
+        }
+        public bool IsEnable
+        {
+            get => isEnable;
+            set
+            {
+                isEnable = value;
+                OnPropertyChanged(nameof(IsEnable));
             }
         }
         public string ModelName
@@ -65,6 +85,10 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             {
                 modelName = value;
                 OnPropertyChanged(nameof(ModelName));
+                if (modelName != null)
+                {
+                    IsEnable = true;
+                }
             }
         }
         public RelayCommand AddCarModel
@@ -74,38 +98,59 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 return addCarModel ??
                       (addCarModel = new RelayCommand((o) =>
                       {
-                          StringBuilder errors = new StringBuilder();
-                          if (String.IsNullOrWhiteSpace(modelName))
-                              errors.AppendLine("Укажите название модели.");
-                          if (selecteCarBrand == null)
-                              errors.AppendLine("Укажите автоконцерн.");
-                          if (errors.Length > 0)
+                          using (var context = new AutoServiceContext())
                           {
-                              MessageBox.Show(errors.ToString());
-                              return;
-                          }
+                              StringBuilder errors = new StringBuilder();
+                              if (String.IsNullOrWhiteSpace(modelName))
+                                  errors.AppendLine("Укажите название модели.");
+                              if (selecteCarBrand == null)
+                                  errors.AppendLine("Укажите марку.");
+                              if (errors.Length > 0)
+                              {
+                                  MessageBox.Show(errors.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                  return;
+                              }
 
-                          tmp = AutoServiceContext.GetContext().CarBrands.FirstOrDefault(A => A.NameCarBrand == selecteCarBrand.NameCarBrand);
-                          int id = tmp.IdcarBrand;
-                          Model tmpModel = new Model() { NameModel = modelName, IdcarBrand = id };
+                              tmp = context.CarBrands.FirstOrDefault(A => A.NameCarBrand == selecteCarBrand.NameCarBrand);
+                              int id = tmp.IdcarBrand;
+                              Model tmpModel = new Model() { NameModel = modelName, IdcarBrand = id };
 
-                          AutoServiceContext.GetContext().Models.Add(tmpModel);
-                          try
-                          {
-                              AutoServiceContext.GetContext().SaveChanges();
-                              MessageBox.Show("Информация сохранена!");
+                              context.Models.Add(tmpModel);
+                              try
+                              {
+                                  context.SaveChanges();
+                                  MessageBox.Show("Информация сохранена!");
 
+                              }
+                              catch (Exception ex)
+                              {
+                                  MessageBox.Show(ex.Message.ToString());
+                              }
+                              SetProperties();
+                              CarModels = displaycarModels;
+                              ModelName = null;
+                              SelecteCarBrand = null;
+                              IsEnable = false;
                           }
-                          catch (Exception ex)
-                          {
-                              MessageBox.Show(ex.Message.ToString());
-                          }
-                          SetProperties();
-                          CarModels = displaycarModels;
-                          ModelName = null;
-                          SelecteCarBrand = null;
                       }
                        ));
+            }
+        }
+        public RelayCommand ResetAll
+        {
+            get
+            {
+                return resetAll ??
+                     (resetAll = new RelayCommand((o) =>
+                     {
+                         SetProperties();
+                         CarModels = displaycarModels;
+                         ModelName = null;
+                         SelecteCarBrand = null;
+                         IsEnable = false;
+
+                     }
+                     ));
             }
         }
     }

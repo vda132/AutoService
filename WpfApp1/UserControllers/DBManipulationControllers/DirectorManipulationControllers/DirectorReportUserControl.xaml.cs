@@ -26,5 +26,10 @@ namespace WpfApp1.UserControllers.DBManipulationControllers.DirectorManipulation
             InitializeComponent();
             this.DataContext = new DirectorReportViewModel();
         }
+
+        private void Draw()
+        {
+            
+        }
     }
 }

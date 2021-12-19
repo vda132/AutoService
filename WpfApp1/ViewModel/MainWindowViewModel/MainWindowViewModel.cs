@@ -7,7 +7,7 @@ using WpfApp1.ViewModel.Abstract;
 
 namespace WpfApp1.ViewModel
 {
-    class MainWindowViewModel:BaseViewModel
+    class MainWindowViewModel : BaseViewModel
     {
         private BaseViewModel currentMenuViewModel;
         public BaseViewModel CurrentMenuViewModel

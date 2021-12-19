@@ -8,12 +8,22 @@ using WpfApp1.ViewModel.Abstract;
 
 namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
 {
-    class DBAdminAutoConcernViewModel:BaseViewModel
+    class DBAdminAutoConcernViewModel : BaseViewModel
     {
+        RelayCommand deletingAutoconcern;
         List<AutoConcern> autoConcerns;
+        private string autoConcernName;
+        RelayCommand addAutoConcern;
+        RelayCommand editConcern;
+        private Country selectedCountry;
         List<AutoConcern> displayAutoConcern;
         AutoConcern selectedAutoConcern;
-        bool isEnable=false;
+        bool isEnable = false;
+        bool isAddButtonEnable = true;
+        bool isResetButtonEnable = false;
+        Country tmp;
+        List<Country> countries = new List<Country>();
+        RelayCommand resetAll;
         public bool IsEnable
         {
             get => isEnable;
@@ -29,13 +39,18 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
         }
         private void SetProperties()
         {
-            autoConcerns = AutoServiceContext.GetContext().AutoConcerns.ToList();
-            var countries = AutoServiceContext.GetContext().Countries.ToList();
-            foreach (var concern in autoConcerns)
+            using (var context = new AutoServiceContext())
             {
-                concern.IdcountryNavigation = countries.FirstOrDefault(A => A.Idcountry == concern.Idcountry);
+
+                autoConcerns = context.AutoConcerns.ToList();
+                var _countries = context.Countries.ToList();
+                foreach (var concern in autoConcerns)
+                {
+                    concern.IdcountryNavigation = _countries.FirstOrDefault(A => A.Idcountry == concern.Idcountry);
+                }
+                displayAutoConcern = autoConcerns;
+                countries = context.Countries.ToList();
             }
-            displayAutoConcern = autoConcerns;
         }
         public List<AutoConcern> AutoConcerns
         {
@@ -57,13 +72,15 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 if (selectedAutoConcern != null)
                 {
                     IsEnable = true;
+                    IsAddButtonEnable = false;
                     AutoConcernName = SelectedAutoConcern.NameAutoConcern;
                     SelectedCountry = SelectedAutoConcern.IdcountryNavigation;
+                    IsResetButtonEnable = true;
                 }
             }
         }
 
-        RelayCommand deletingAutoconcern;
+
 
         public RelayCommand DeletingAutoconcern
         {
@@ -72,33 +89,38 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 return deletingAutoconcern ??
                       (deletingAutoconcern = new RelayCommand((o) =>
                       {
-                          if (MessageBox.Show($"Вы точно хотите удалить выбранный автоконцерн под названием " +
-                              $"{SelectedAutoConcern.NameAutoConcern}?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                          using (var context = new AutoServiceContext())
                           {
-                              try
+                              if (MessageBox.Show($"Вы точно хотите удалить выбранный автоконцерн под названием " +
+                                  $"{SelectedAutoConcern.NameAutoConcern}?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                               {
-                                  AutoServiceContext.GetContext().AutoConcerns.Remove(SelectedAutoConcern);
-                                  MessageBox.Show("Данные удалены.");
-                                  AutoServiceContext.GetContext().SaveChanges();
-                                  autoConcerns = AutoServiceContext.GetContext().AutoConcerns.ToList();
-                                  AutoConcerns = autoConcerns;
-                                  IsEnable = false;
+                                  try
+                                  {
+                                      context.AutoConcerns.Remove(SelectedAutoConcern);
+                                      MessageBox.Show("Данные удалены.");
+                                      context.SaveChanges();
+                                      autoConcerns = context.AutoConcerns.ToList();
+                                      AutoConcerns = autoConcerns;
+                                      IsEnable = false;
+                                  }
+                                  catch (Exception ex)
+                                  {
+                                      MessageBox.Show(ex.Message);
+                                  }
+                                  SetProperties();
+                                  AutoConcerns = displayAutoConcern;
+                                  AutoConcernName = null;
+                                  SelectedCountry = null;
+                                  IsResetButtonEnable = false;
+                                  IsAddButtonEnable = true;
+                                  SelectedAutoConcern = null;
                               }
-                              catch (Exception ex)
-                              {
-                                  MessageBox.Show(ex.Message);
-                              }
-                              AutoConcerns = displayAutoConcern;
-                              AutoConcernName = null;
-                              SelectedCountry = null;
                           }
                       }));
             }
         }
-        Country tmp;
-        List<Country> countries = AutoServiceContext.GetContext().Countries.ToList();
-        private string autoConcernName;
-        RelayCommand addAutoConcern;
+
+
         public List<Country> CountryNames
         {
             get => countries;
@@ -108,7 +130,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 OnPropertyChanged("CountryNames");
             }
         }
-        private Country selectedCountry;
+
         public Country SelectedCountry
         {
             get => selectedCountry;
@@ -116,6 +138,10 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             {
                 selectedCountry = value;
                 OnPropertyChanged("SelectedCountry");
+                if (selectedCountry != null)
+                {
+                    IsResetButtonEnable = true;
+                }
             }
         }
         public string AutoConcernName
@@ -125,6 +151,10 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             {
                 autoConcernName = value;
                 OnPropertyChanged("AutoConcernName");
+                if (autoConcernName != null)
+                {
+                    IsResetButtonEnable = true;
+                }
             }
         }
         public RelayCommand AddAutoConcern
@@ -134,43 +164,67 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 return addAutoConcern ??
                       (addAutoConcern = new RelayCommand((o) =>
                       {
-                          StringBuilder errors = new StringBuilder();
-                          if (String.IsNullOrWhiteSpace(autoConcernName))
-                              errors.AppendLine("Укажите название автоконцерна.");
-                          if (selectedCountry == null)
-                              errors.AppendLine("Укажите страну автоконцерна.");
-                          if (errors.Length > 0)
+                          using (var context = new AutoServiceContext())
                           {
-                              MessageBox.Show(errors.ToString(),"Error",MessageBoxButton.OK,MessageBoxImage.Error);
-                              return;
-                          }
+                              StringBuilder errors = new StringBuilder();
+                              if (String.IsNullOrWhiteSpace(autoConcernName))
+                                  errors.AppendLine("Укажите название автоконцерна.");
+                              if (selectedCountry == null)
+                                  errors.AppendLine("Укажите страну автоконцерна.");
+                              if (context.AutoConcerns.FirstOrDefault(A => A.NameAutoConcern == autoConcernName) != null)
+                                  errors.AppendLine("Такой автоконцерн уже есть.");
+                              if (errors.Length > 0)
+                              {
+                                  MessageBox.Show(errors.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                  return;
+                              }
 
-                          tmp = countries.FirstOrDefault(A => A.NameCountry == selectedCountry.NameCountry);
-                          int id = tmp.Idcountry;
-                          AutoConcern tmpCon = new AutoConcern { NameAutoConcern = autoConcernName, Idcountry = id };
+                              tmp = countries.FirstOrDefault(A => A.NameCountry == selectedCountry.NameCountry);
+                              int id = tmp.Idcountry;
+                              AutoConcern tmpCon = new AutoConcern { NameAutoConcern = autoConcernName, Idcountry = id };
 
-                          AutoServiceContext.GetContext().AutoConcerns.Add(tmpCon);
-                          
-                          try
-                          {
-                              AutoServiceContext.GetContext().SaveChanges();
-                              MessageBox.Show("Информация сохранена!");
+                              context.AutoConcerns.Add(tmpCon);
 
+                              try
+                              {
+                                  context.SaveChanges();
+                                  MessageBox.Show("Информация сохранена!");
+
+                              }
+                              catch (Exception ex)
+                              {
+                                  MessageBox.Show(ex.Message.ToString());
+                              }
+                              autoConcerns = context.AutoConcerns.ToList();
+                              SetProperties();
+                              AutoConcerns = displayAutoConcern;
+                              AutoConcernName = null;
+                              SelectedCountry = null;
+                              IsResetButtonEnable = false;
                           }
-                          catch (Exception ex)
-                          {
-                              MessageBox.Show(ex.Message.ToString());
-                          }
-                          autoConcerns = AutoServiceContext.GetContext().AutoConcerns.ToList();
-                          SetProperties();
-                          AutoConcerns = displayAutoConcern;
-                          AutoConcernName = null;
-                          SelectedCountry = null;
                       }
                        ));
             }
         }
-        RelayCommand editConcern;
+        public bool IsResetButtonEnable
+        {
+            get => isResetButtonEnable;
+            set
+            {
+                isResetButtonEnable = value;
+                OnPropertyChanged(nameof(IsResetButtonEnable));
+            }
+        }
+        public bool IsAddButtonEnable
+        {
+            get => isAddButtonEnable;
+            set
+            {
+                isAddButtonEnable = value;
+                OnPropertyChanged(nameof(IsAddButtonEnable));
+            }
+        }
+
         public RelayCommand EditConcern
         {
             get
@@ -178,30 +232,56 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 return editConcern ??
                       (editConcern = new RelayCommand((o) =>
                       {
-                          if (MessageBox.Show($"Вы точно хотите редактировать выбранный автоконцерн под названием " +
-                              $"{SelectedAutoConcern.NameAutoConcern}?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                          using (var context = new AutoServiceContext())
                           {
-                              try
+                              if (MessageBox.Show($"Вы точно хотите редактировать выбранный автоконцерн под названием " +
+                                  $"{SelectedAutoConcern.NameAutoConcern}?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                               {
-                                  AutoConcern tmp = AutoServiceContext.GetContext().AutoConcerns.FirstOrDefault(A => A.IdautoConcern == SelectedAutoConcern.IdautoConcern);
-                                  tmp.NameAutoConcern = AutoConcernName;
-                                  tmp.IdcountryNavigation = SelectedCountry;
-                                  AutoServiceContext.GetContext().AutoConcerns.Update(tmp);
-                                  MessageBox.Show("Данные обновлены.");
-                                  AutoServiceContext.GetContext().SaveChanges();
+                                  try
+                                  {
+                                      AutoConcern tmp = context.AutoConcerns.FirstOrDefault(A => A.IdautoConcern == SelectedAutoConcern.IdautoConcern);
+                                      tmp.NameAutoConcern = AutoConcernName;
+                                      tmp.IdcountryNavigation = SelectedCountry;
+                                      context.AutoConcerns.Update(tmp);
+                                      MessageBox.Show("Данные обновлены.");
+                                      context.SaveChanges();
 
 
+                                  }
+                                  catch (Exception ex)
+                                  {
+                                      MessageBox.Show(ex.Message);
+                                  }
+                                  SetProperties();
+                                  AutoConcerns = displayAutoConcern;
+                                  IsEnable = false;
+                                  AutoConcernName = null;
+                                  SelectedCountry = null;
+                                  SelectedAutoConcern = null;
+                                  IsResetButtonEnable = false;
+                                  IsAddButtonEnable = true;
                               }
-                              catch (Exception ex)
-                              {
-                                  MessageBox.Show(ex.Message);
-                              }
-                              SetProperties();
-                              AutoConcerns = displayAutoConcern;
-                              IsEnable = false;
-                              AutoConcernName = null;
-                              SelectedCountry = null;
                           }
+                      }));
+            }
+        }
+        public RelayCommand ResetAll
+        {
+            get
+            {
+                return resetAll ??
+                      (resetAll = new RelayCommand((o) =>
+                      {
+                          SetProperties();
+                          AutoConcerns = displayAutoConcern;
+                          IsEnable = false;
+                          AutoConcernName = null;
+                          SelectedCountry = null;
+                          SelectedAutoConcern = null;
+                          IsResetButtonEnable = false;
+                          IsAddButtonEnable = true;
+
+
                       }));
             }
         }

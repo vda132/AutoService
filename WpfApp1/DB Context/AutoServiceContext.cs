@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 #nullable disable
 
@@ -8,7 +9,6 @@ namespace WpfApp1
 {
     public partial class AutoServiceContext : DbContext
     {
-        private static AutoServiceContext context;
         public AutoServiceContext()
         {
         }
@@ -17,14 +17,7 @@ namespace WpfApp1
             : base(options)
         {
         }
-        public static AutoServiceContext GetContext()
-        {
-            if (context == null)
-            {
-                context = new AutoServiceContext();
-            }
-            return context;
-        }
+
         public virtual DbSet<Account> Accounts { get; set; }
         public virtual DbSet<AutoConcern> AutoConcerns { get; set; }
         public virtual DbSet<AutoPart> AutoParts { get; set; }
@@ -45,8 +38,8 @@ namespace WpfApp1
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=DESKTOP-E8J0I95\\SQLEXPRESS;Database=AutoService;Trusted_Connection=True;");
+                var config = Configurations.Configuration.GetConfiguration();
+                optionsBuilder.UseSqlServer(config.Config.GetConnectionString("AutoServiceConnection"));
             }
         }
 
@@ -172,7 +165,7 @@ namespace WpfApp1
                 entity.HasOne(d => d.IdworkerNavigation)
                     .WithMany(p => p.AutoServices)
                     .HasForeignKey(d => d.Idworker)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_IDWorker");
 
                 entity.HasOne(d => d.StateNumberNavigation)
@@ -254,7 +247,7 @@ namespace WpfApp1
                 entity.HasOne(d => d.IdautoConcernNavigation)
                     .WithMany(p => p.CarBrands)
                     .HasForeignKey(d => d.IdautoConcern)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_IDAutoConcernCarBrand");
             });
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using WpfApp1.ViewModel;
 using WpfApp1.ViewModel.Abstract;
 using WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewModel;
-using WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewModel.AddingViewModel;
+
 
 namespace WpfApp1.Navigation
 {
@@ -15,19 +15,24 @@ namespace WpfApp1.Navigation
         public static event Action StateChanged;
         public static Stack<BaseViewModel> previousViewmModel = new Stack<BaseViewModel>();
         private static BaseViewModel currentViewModel = new DirectorViewModel();
+        private static int userId;
         public static BaseViewModel CurrentViewModel
         {
             get => currentViewModel;
         }
-
+        public static int UserId
+        {
+            get => userId;
+            set
+            {
+                userId = value;
+            }
+        }
         public static void ToDirectorWorkers()
         {
             Navigate(new DirectorWorkersViewModel());
         }
-        public static void ToAddingWorker()
-        {
-            Navigate(new AddingWorkerViewModel());
-        }
+      
         public static void ToDirectorService()
         {
             Navigate(new DirectorServiceViewModel());

@@ -3,11 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers"
+             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers" xmlns:dbadminmanipulationviewmodel="clr-namespace:WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel" d:DataContext="{d:DesignInstance Type=dbadminmanipulationviewmodel:DBAdminAutoPartViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="504" d:DesignWidth="899">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
-        <DataGrid x:Name="AutoConcerns" Width="600" Height="350" SelectedItem = "{Binding SelectedAutoPart}" AutoGenerateColumns="False"  Margin="249,29,10,120"  IsReadOnly="True" ItemsSource="{Binding AutoParts}" SelectionMode="Single">
+        <DataGrid Width="600" Height="350" SelectedItem = "{Binding SelectedAutoPart}" AutoGenerateColumns="False"  Margin="249,29,10,120"  IsReadOnly="True" ItemsSource="{Binding AutoParts}" SelectionMode="Single">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Название детали" Binding="{Binding NameAutoPart}" Width="*"/>
                 <DataGridTextColumn Header="Страна" Width="*" Binding="{Binding IdcountryNavigation.NameCountry}"/>
@@ -15,15 +15,16 @@
         </DataGrid>
         <Button Content="Добавить" 
             Command="{Binding AddAutoPart}" 
-            HorizontalAlignment="Left" Margin="110,416,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
-        <TextBox HorizontalAlignment="Left" Text="{Binding AutoPartName}" Margin="74,100,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+            HorizontalAlignment="Left" Margin="128,495,0,0" IsEnabled="{Binding IsAddButtonEnable}" VerticalAlignment="Top" Width="81" Height="32"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding AutoPartName}" Margin="74,100,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Width="159" Height="27"/>
         <ComboBox x:Name="CountriesBox" HorizontalAlignment="Left"  
             ItemsSource="{Binding CountryNames}" 
             DisplayMemberPath="NameCountry" 
-            SelectedItem="{Binding SelectedCountry}"  Margin="74,196,0,0" VerticalAlignment="Top" Width="120"/>
+            SelectedItem="{Binding SelectedCountry}"  Margin="74,196,0,0" VerticalAlignment="Top" Width="159" Height="27"/>
         <Label Content="Введите название детали" HorizontalAlignment="Left" Margin="74,69,0,0" VerticalAlignment="Top"/>
         <Label Content="Выберете страну производителя" HorizontalAlignment="Left" Margin="74,165,0,0" VerticalAlignment="Top"/>
-        <Button Content="Редактировать" Command="{Binding EditAutoPart}" IsEnabled="{Binding IsEnable}" HorizontalAlignment="Left" Margin="269,416,0,0" VerticalAlignment="Top" Height="26" Width="112"/>
+        <Button Content="Редактировать" Command="{Binding EditAutoPart}" IsEnabled="{Binding IsEnable}" HorizontalAlignment="Left" Margin="276,495,0,0" VerticalAlignment="Top" Height="32" Width="112"/>
+        <Button Content="Сбросить все" HorizontalAlignment="Center" IsEnabled="{Binding IsResetButtonEnable}" Command="{Binding ResetAll}" Margin="0,495,0,0" VerticalAlignment="Top" Height="32" Width="92"/>
 
     </Grid>
 </UserControl>

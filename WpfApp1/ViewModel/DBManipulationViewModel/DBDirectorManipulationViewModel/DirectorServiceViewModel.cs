@@ -7,39 +7,54 @@ using WpfApp1.ViewModel.Abstract;
 
 namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewModel
 {
-    class DirectorServiceViewModel:BaseViewModel
+    class DirectorServiceViewModel : BaseViewModel
     {
         List<AutoService> autoServices;
         List<AutoService> displayAutoServices;
-        List<Client> clients = AutoServiceContext.GetContext().Clients.ToList();
-        List<Worker> workers = AutoServiceContext.GetContext().Workers.Where(A => A.Idposition == AutoServiceContext.GetContext().Positions.FirstOrDefault(A => A.NamePosition == "Мастер").Idposition).ToList();
-        Client selectedClient;
-        string nameClientFilter;
+        List<Worker> workers = new List<Worker>();
+        Worker selectedWorker;
         string nameMasterFilter;
         bool isResetButtonEnable = false;
+        RelayCommand resetAllCommand;
         public DirectorServiceViewModel()
         {
             SetProperties();
         }
         private void SetProperties()
         {
-            autoServices = AutoServiceContext.GetContext().AutoServices.ToList();
-            var workers = AutoServiceContext.GetContext().Workers.ToList();
-            var cars = AutoServiceContext.GetContext().Cars.ToList();
-            var service = AutoServiceContext.GetContext().ServiceTypes.ToList();
-            var models = AutoServiceContext.GetContext().Models.ToList();
-            var clients = AutoServiceContext.GetContext().Clients.ToList();
-            var brands = AutoServiceContext.GetContext().CarBrands.ToList();
-            foreach (var element in autoServices)
+            using (var context = new AutoServiceContext())
             {
-                element.IdserviceTypeNavigation = service.FirstOrDefault(A => A.IdserviceType == element.IdserviceType);
-                element.IdworkerNavigation = workers.FirstOrDefault(A => A.Idworker == element.Idworker);
-                element.StateNumberNavigation = cars.FirstOrDefault(A => A.StateNumber == element.StateNumber);
-                element.StateNumberNavigation.IdmodelNavigation = models.FirstOrDefault(A => A.Idmodel == element.StateNumberNavigation.Idmodel);
-                element.StateNumberNavigation.IdclientNavigation = clients.FirstOrDefault(A => A.Idclient == element.StateNumberNavigation.Idclient);
-                element.StateNumberNavigation.IdmodelNavigation.IdcarBrandNavigation = brands.FirstOrDefault(A => A.IdcarBrand == element.StateNumberNavigation.IdmodelNavigation.IdcarBrand);
+                workers = context.Workers.Where(A => A.Idposition == context.Positions.FirstOrDefault(A => A.NamePosition == "Мастер").Idposition).ToList();
+                autoServices = context.AutoServices.ToList();
+                var workers_ = context.Workers.ToList();
+                var cars = context.Cars.ToList();
+                var service = context.ServiceTypes.ToList();
+                var models = context.Models.ToList();
+                var clients = context.Clients.ToList();
+                var brands = context.CarBrands.ToList();
+                foreach (var element in autoServices)
+                {
+
+                    element.IdworkerNavigation = workers_.FirstOrDefault(A => A.Idworker == element.Idworker);
+                    element.IdserviceTypeNavigation = service.FirstOrDefault(A => A.IdserviceType == element.IdserviceType);
+                    element.StateNumberNavigation = cars.FirstOrDefault(A => A.StateNumber == element.StateNumber);
+                    element.StateNumberNavigation.IdmodelNavigation = models.FirstOrDefault(A => A.Idmodel == element.StateNumberNavigation.Idmodel);
+                    element.StateNumberNavigation.IdclientNavigation = clients.FirstOrDefault(A => A.Idclient == element.StateNumberNavigation.Idclient);
+                    element.StateNumberNavigation.IdmodelNavigation.IdcarBrandNavigation = brands.FirstOrDefault(A => A.IdcarBrand == element.StateNumberNavigation.IdmodelNavigation.IdcarBrand);
+                }
+                displayAutoServices = autoServices;
+                AutoServices = displayAutoServices;
+                Workers = workers;
             }
-            displayAutoServices = autoServices;
+        }
+        private void ResetAll()
+        {
+            SetProperties();
+            AutoServices = displayAutoServices;
+            SelectedWorker = null;
+            NameMasterFilter = null;
+            IsResetButtonEnable = false;
+
         }
         public List<AutoService> AutoServices
         {
@@ -48,35 +63,6 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
             {
                 displayAutoServices = value;
                 OnPropertyChanged(nameof(AutoServices));
-            }
-        }
-        public List<Client> Clients
-        {
-            get => clients;
-            set
-            {
-                clients = value;
-                OnPropertyChanged(nameof(Clients));
-            }
-        }
-        public Client SelectedClient
-        {
-            get => selectedClient;
-            set
-            {
-                selectedClient = value;
-                OnPropertyChanged(nameof(SelectedClient));
-                if (selectedClient != null)
-                {
-                    List<AutoService> tmpAutoServices = new List<AutoService>();
-                    var cars = AutoServiceContext.GetContext().Cars.Where(A => A.Idclient == selectedClient.Idclient).ToList();
-                    foreach (var tmp in cars)
-                    {
-                        tmpAutoServices.Add(AutoServiceContext.GetContext().AutoServices.FirstOrDefault(A => A.StateNumber == tmp.StateNumber));
-                    }
-                    AutoServices = tmpAutoServices;
-                    IsResetButtonEnable = true;
-                }
             }
         }
         public bool IsResetButtonEnable
@@ -88,20 +74,6 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
                 OnPropertyChanged(nameof(IsResetButtonEnable));
             }
         }
-        public string NameClientFilter
-        {
-            get => nameClientFilter;
-            set
-            {
-                nameClientFilter = value;
-                OnPropertyChanged(nameof(NameClientFilter));
-                if (nameClientFilter != null)
-                {
-                    Clients = AutoServiceContext.GetContext().Clients.Where(A => A.NameClient.ToLower().Contains(nameClientFilter.ToLower())).ToList();
-                    IsResetButtonEnable = true;
-                }
-            }
-        }
         public string NameMasterFilter
         {
             get => nameMasterFilter;
@@ -110,7 +82,13 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
                 nameMasterFilter = value;
                 OnPropertyChanged(nameof(NameMasterFilter));
                 if (nameMasterFilter != null)
-                    Workers = AutoServiceContext.GetContext().Workers.Where(A => A.NameWorker.ToLower().Contains(nameMasterFilter.ToLower())&& A.Idposition == AutoServiceContext.GetContext().Positions.FirstOrDefault(A => A.NamePosition == "Мастер").Idposition).ToList();
+                {
+                    using (var context = new AutoServiceContext())
+                    {
+                        Workers = context.Workers.Where(A => A.NameWorker.ToLower().Contains(nameMasterFilter.ToLower()) && A.Idposition == context.Positions.FirstOrDefault(A => A.NamePosition == "Мастер").Idposition).ToList();
+                        IsResetButtonEnable = true;
+                    }
+                }
             }
         }
         public List<Worker> Workers
@@ -120,6 +98,43 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
             {
                 workers = value;
                 OnPropertyChanged(nameof(Workers));
+            }
+        }
+        public Worker SelectedWorker
+        {
+            get => selectedWorker;
+            set
+            {
+                selectedWorker = value;
+                OnPropertyChanged(nameof(SelectedWorker));
+                if (selectedWorker != null)
+                {
+                    using (var context = new AutoServiceContext())
+                    {
+                        var tmp = context.AutoServices.Where(A => A.Idworker == selectedWorker.Idworker).ToList();
+                        foreach (var info in tmp)
+                        {
+                            info.IdserviceTypeNavigation = context.ServiceTypes.FirstOrDefault(A => A.IdserviceType == info.IdserviceType);
+                            info.IdworkerNavigation = context.Workers.FirstOrDefault(A => A.Idworker == info.Idworker);
+                            info.StateNumberNavigation = context.Cars.FirstOrDefault(A => A.StateNumber == info.StateNumber);
+                            info.StateNumberNavigation.IdmodelNavigation = context.Models.FirstOrDefault(A => A.Idmodel == info.StateNumberNavigation.Idmodel);
+                            info.StateNumberNavigation.IdclientNavigation = context.Clients.FirstOrDefault(A => A.Idclient == info.StateNumberNavigation.Idclient);
+                            info.StateNumberNavigation.IdmodelNavigation.IdcarBrandNavigation = context.CarBrands.FirstOrDefault(A => A.IdcarBrand == info.StateNumberNavigation.IdmodelNavigation.IdcarBrand);
+                        }
+                        AutoServices = tmp;
+                        IsResetButtonEnable = true;
+                    }
+                }
+            }
+        }
+        public RelayCommand ResetAllCommand
+        {
+            get
+            {
+                return resetAllCommand ?? (resetAllCommand = new RelayCommand((o) =>
+                {
+                    ResetAll();
+                }));
             }
         }
     }

@@ -37,13 +37,13 @@ namespace WpfApp1.Navigation
             currentViewModel = previousViewmModel.Pop();
             StateChanged?.Invoke();
         }
-        private static void Navigate(BaseViewModel viewModel) 
+        private static void Navigate(BaseViewModel viewModel)
         {
             previousViewmModel.Push(currentViewModel);
             currentViewModel?.Dispose();
             currentViewModel = viewModel;
             StateChanged?.Invoke();
         }
-        
+
     }
 }

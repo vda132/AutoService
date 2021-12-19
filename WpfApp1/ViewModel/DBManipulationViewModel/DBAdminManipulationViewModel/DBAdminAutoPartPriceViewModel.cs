@@ -9,12 +9,12 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
 {
     class DBAdminAutoPartPriceViewModel : BaseViewModel
     {
-        bool isEnableFilter=false;
+        bool isEnableFilter = false;
         List<AutoPartPrice> autoPartPrices;
         List<AutoPartPrice> displayAutoPartPrices;
-        List<AutoPart> autoParts = AutoServiceContext.GetContext().AutoParts.ToList();
+        List<AutoPart> autoParts = new List<AutoPart>();
         AutoPart selectedAutoPart;
-        private DateTime selectedDate=DateTime.Now;
+        private DateTime selectedDate = DateTime.Now;
         RelayCommand resetFilter;
         private string price;
         private RelayCommand addInformation;
@@ -35,27 +35,38 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
         }
         private void SetProperties()
         {
-            autoPartPrices = AutoServiceContext.GetContext().AutoPartPrices.ToList();
-            var autoPartNames = AutoServiceContext.GetContext().AutoParts.ToList();
-            foreach (var names in autoPartPrices)
+            using (var context = new AutoServiceContext())
             {
-                names.IdautoPartNavigation = autoPartNames.First(A => A.IdautoPart == names.IdautoPart);
-                names.DateChange.ToShortDateString();
+                autoParts = context.AutoParts.ToList();
+                autoPartPrices = context.AutoPartPrices.ToList();
+                var autoPartNames = context.AutoParts.ToList();
+                foreach (var names in autoPartPrices)
+                {
+                    names.IdautoPartNavigation = autoPartNames.FirstOrDefault(A => A.IdautoPart == names.IdautoPart);
+                }
+                displayAutoPartPrices = autoPartPrices;
             }
-            displayAutoPartPrices = autoPartPrices;
         }
         public AutoPart SelectedFilter
         {
             get => selectedFilter;
             set
             {
-                
+
                 selectedFilter = value;
                 OnPropertyChanged(nameof(SelectedFilter));
-                if (selectedFilter != null) 
+                if (selectedFilter != null)
                 {
-                    IsEnableFilter = true;
-                    AutoPartsPrices = AutoServiceContext.GetContext().AutoPartPrices.Where(A => A.IdautoPart == SelectedFilter.IdautoPart).ToList();
+                    using (var context = new AutoServiceContext())
+                    {
+                        IsEnableFilter = true;
+                        var tmp = context.AutoPartPrices.Where(A => A.IdautoPart == SelectedFilter.IdautoPart).ToList();
+                        foreach (var names in tmp)
+                        {
+                            names.IdautoPartNavigation = context.AutoParts.First(A => A.IdautoPart == names.IdautoPart);
+                        }
+                        AutoPartsPrices = tmp;
+                    }
                 }
             }
         }
@@ -112,9 +123,17 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 return resetFilter ??
                       (resetFilter = new RelayCommand((o) =>
                       {
-                          SelectedFilter = null;
-                          IsEnableFilter = true;
-                          AutoPartsPrices = AutoServiceContext.GetContext().AutoPartPrices.ToList();
+                          using (var context = new AutoServiceContext())
+                          {
+                              SelectedFilter = null;
+                              IsEnableFilter = true;
+                              var tmp = context.AutoPartPrices.ToList();
+                              foreach (var names in tmp)
+                              {
+                                  names.IdautoPartNavigation = context.AutoParts.First(A => A.IdautoPart == names.IdautoPart);
+                              }
+                              AutoPartsPrices = tmp;
+                          }
                       }));
             }
         }
@@ -125,39 +144,50 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 return addInformation ??
                       (addInformation = new RelayCommand((o) =>
                       {
-                          StringBuilder errors = new StringBuilder();
-                          if (selectedAutoPart == null)
-                              errors.AppendLine("Выберите запчасть.");
-                          if (price == null)
-                              errors.AppendLine("Введите цену.");
-                          if (!Decimal.TryParse(price, out pricePart))
-                              errors.AppendLine("Введите корректную цену.");
-                          if (errors.Length > 0)
+                          using (var context = new AutoServiceContext())
                           {
-                              MessageBox.Show(errors.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                              return;
+                              StringBuilder errors = new StringBuilder();
+                              if (selectedAutoPart == null)
+                                  errors.AppendLine("Выберите запчасть.");
+                              if (price == null)
+                                  errors.AppendLine("Введите цену.");
+                              if (!Decimal.TryParse(price, out pricePart))
+                                  errors.AppendLine("Введите корректную цену.");
+
+                              if (context.AutoPartPrices.Where(A => A.IdautoPart == selectedAutoPart.IdautoPart).Count() > 0)
+                              {
+                                  DateTime date = context.AutoPartPrices.Where(A => A.IdautoPart == selectedAutoPart.IdautoPart).Max(A => A.DateChange).Date;
+                                  if (date > selectedDate)
+                                      errors.AppendLine("Выбранная дата не может быть меньше даты последнего изменения.");
+                              }
+
+                              if (errors.Length > 0)
+                              {
+                                  MessageBox.Show(errors.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                  return;
+                              }
+                              AutoPartPrice tmp = new AutoPartPrice() { IdautoPart = SelectedAutoPart.IdautoPart, PriceWithoutRepair = pricePart, DateChange = SelectedDate };
+                              if (context.AutoPartPrices.FirstOrDefault(A => A == tmp) != null)
+                              {
+                                  MessageBox.Show("Такая информация уже существует.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                  return;
+                              }
+                              try
+                              {
+                                  context.AutoPartPrices.Add(tmp);
+                                  context.SaveChanges();
+                                  MessageBox.Show("Информация успешно добавлена.", "Успешно", MessageBoxButton.OK);
+                              }
+                              catch (Exception ex)
+                              {
+                                  MessageBox.Show(ex.Message);
+                              }
+                              SetProperties();
+                              AutoPartsPrices = displayAutoPartPrices;
+                              SelectedAutoPart = null;
+                              Price = null;
+                              SelectedDate = DateTime.Now;
                           }
-                          AutoPartPrice tmp = new AutoPartPrice() {IdautoPart=SelectedAutoPart.IdautoPart, PriceWithoutRepair=pricePart, DateChange=SelectedDate };
-                          if (AutoServiceContext.GetContext().AutoPartPrices.FirstOrDefault(A => A == tmp) != null)
-                          {
-                              MessageBox.Show("Такая информация уже существует.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                              return;
-                          }
-                          try
-                          {
-                              AutoServiceContext.GetContext().AutoPartPrices.Add(tmp);
-                              AutoServiceContext.GetContext().SaveChanges();
-                              MessageBox.Show("Информация успешно добавлена.","Успешно",MessageBoxButton.OK);
-                          }
-                          catch (Exception ex)
-                          {
-                            MessageBox.Show(ex.Message);
-                          }
-                          SetProperties();
-                          AutoPartsPrices = displayAutoPartPrices;
-                          SelectedAutoPart = null;
-                          Price = null;
-                          SelectedDate = DateTime.Now;
                       }));
             }
         }

@@ -12,9 +12,9 @@ using WpfApp1.ViewModel.Abstract;
 
 namespace WpfApp1.ViewModel
 {
-    class LoginViewModel:BaseViewModel
+    class LoginViewModel : BaseViewModel
     {
-       
+
         AutoServiceContext DB = new AutoServiceContext();
         private string userName;
         private string password;
@@ -30,10 +30,9 @@ namespace WpfApp1.ViewModel
                 return loginCommand ??
                       (loginCommand = new RelayCommand((o) =>
                       {
-                          //Navigation.Navigation.ToMaster();
                           try
                           {
-                              if (userName == null || password == null) throw new Exception();
+                              if (userName == null || password == null) throw new FieldException("Все поля должны быть заполнены.");
                               acc = DB.Accounts.FirstOrDefault(A => A.LoginAccount == userName);
                               if (acc == null) throw new LoginException("Такого пользователя не существует.");
                               if (acc.PasswordAccount == password)
@@ -41,7 +40,7 @@ namespace WpfApp1.ViewModel
                                   IsLogin = true;
                                   worker = DB.Workers.FirstOrDefault(A => A.Idworker == acc.Idworker);
                                   position = DB.Positions.Find(worker.Idposition);
-                                  
+
                                   ShowLogic();
                               }
                               else throw new PasswordException("Пароль неверный.");
@@ -54,9 +53,9 @@ namespace WpfApp1.ViewModel
                           {
                               MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                           }
-                          catch (Exception)
+                          catch (FieldException ex)
                           {
-                              MessageBox.Show("Поля должны быть заполнены.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                              MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                           }
                       }
                        ));
@@ -93,21 +92,21 @@ namespace WpfApp1.ViewModel
 
         private void ShowLogic()
         {
-            Models.Enums.Position enumPosition = (Models.Enums.Position)position.Idposition;
-            switch (enumPosition)
+            switch (position.NamePosition)
             {
-                case Models.Enums.Position.Director:
+                case "Директор":
                     {
+                        Navigation.DirectorNavigation.UserId = worker.Idposition;
                         Navigation.Navigation.ToDirector();
                         break;
                     }
-                case Models.Enums.Position.Worker:
+                case "Мастер":
                     {
                         Navigation.MasterNavigation.UserId = worker.Idworker;
                         Navigation.Navigation.ToMaster();
                         break;
                     }
-                case Models.Enums.Position.DBAdmin:
+                case "Администратор БД":
                     {
                         Navigation.Navigation.ToDBAdmin();
                         break;

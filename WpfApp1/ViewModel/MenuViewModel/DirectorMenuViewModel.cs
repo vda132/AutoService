@@ -7,7 +7,7 @@ using WpfApp1.ViewModel.Abstract;
 
 namespace WpfApp1.ViewModel.MenuViewModel
 {
-    
+
     class DirectorMenuViewModel : BaseViewModel
     {
         RelayCommand backButtonCommand;

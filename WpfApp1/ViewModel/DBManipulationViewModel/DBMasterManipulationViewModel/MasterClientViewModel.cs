@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+
 using WpfApp1.ViewModel.Abstract;
 
 namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewModel
@@ -12,11 +13,11 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
     {
         string nameClient;
         string stateNumber;
-        List<CarBrand> carBrands = AutoServiceContext.GetContext().CarBrands.ToList();
+        List<CarBrand> carBrands = new List<CarBrand>();
         CarBrand selectedCarBrand;
-        List<Model> models;
+        List<Model> models = new List<Model>();
         Model selectedCarModel;
-        DateTime date=DateTime.Now;
+        DateTime date = DateTime.Now;
         RelayCommand addCommand;
         List<Car> cars;
         List<Car> displayCars;
@@ -25,7 +26,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
         bool isAddNewCarButtonEnable;
         RelayCommand addNewCarToClient;
         bool isReadOnly = false;
-        string nameClientFilter;
+
         string stateNumberFilter;
         RelayCommand resetFilters;
         RelayCommand searchCommand;
@@ -37,17 +38,23 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
 
         private void SetProperties()
         {
-            cars = AutoServiceContext.GetContext().Cars.ToList();
-            var clients = AutoServiceContext.GetContext().Clients.ToList();
-            var models = AutoServiceContext.GetContext().Models.ToList();
-            var brands = AutoServiceContext.GetContext().CarBrands.ToList();
-            foreach (var car in cars)
+            using (var context = new AutoServiceContext())
             {
-                car.IdclientNavigation = clients.FirstOrDefault(A => A.Idclient == car.Idclient);
-                car.IdmodelNavigation = models.FirstOrDefault(A => A.Idmodel == car.Idmodel);
-                car.IdmodelNavigation.IdcarBrandNavigation = brands.FirstOrDefault(A => A.IdcarBrand == car.IdmodelNavigation.IdcarBrand);
+                carBrands = context.CarBrands.ToList();
+                cars = context.Cars.ToList();
+                models = context.Models.ToList();
+                var clients = context.Clients.ToList();
+                var _models = context.Models.ToList();
+                var brands = context.CarBrands.ToList();
+                foreach (var car in cars)
+                {
+                    car.IdclientNavigation = clients.FirstOrDefault(A => A.Idclient == car.Idclient);
+                    car.IdmodelNavigation = _models.FirstOrDefault(A => A.Idmodel == car.Idmodel);
+                    car.IdmodelNavigation.IdcarBrandNavigation = brands.FirstOrDefault(A => A.IdcarBrand == car.IdmodelNavigation.IdcarBrand);
+                }
+                displayCars = cars;
+                Cars = displayCars;
             }
-            displayCars = cars;
         }
 
         private void RecetAll()
@@ -62,7 +69,6 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             IsAddButtonEnable = false;
             IsReadOnly = false;
             IsAddNewCarButtonEnable = false;
-            NameClientFilter = null;
             StateNumberFilter = null;
             IsFilterButtonEnable = false;
         }
@@ -82,7 +88,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                     NameClient = selectedCar.IdclientNavigation.NameClient;
                     IsReadOnly = true;
                 }
-                
+
             }
         }
         public bool IsAddButtonEnable
@@ -124,22 +130,10 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 {
                     IsFilterButtonEnable = true;
                 }
-                
+
             }
         }
-        public string NameClientFilter
-        {
-            get => nameClientFilter;
-            set
-            {
-                nameClientFilter = value;
-                OnPropertyChanged(nameof(NameClientFilter));
-                if (nameClientFilter != null)
-                {
-                    IsFilterButtonEnable = true;
-                }
-            }
-        }
+
         public string NameClient
         {
             get => nameClient;
@@ -149,7 +143,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 OnPropertyChanged(nameof(NameClient));
                 if (nameClient != null)
                 {
-                   IsFilterButtonEnable = true;
+                    IsFilterButtonEnable = true;
                 }
             }
         }
@@ -197,10 +191,13 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             {
                 selectedCarBrand = value;
                 OnPropertyChanged(nameof(SelectedCarBrand));
-                if(selectedCarBrand!=null)
+                if (selectedCarBrand != null)
                 {
                     IsFilterButtonEnable = true;
-                    Models = AutoServiceContext.GetContext().Models.Where(A => A.IdcarBrand == selectedCarBrand.IdcarBrand).ToList();
+                    using (var context = new AutoServiceContext())
+                    {
+                        Models = context.Models.Where(A => A.IdcarBrand == selectedCarBrand.IdcarBrand).ToList();
+                    }
                 }
             }
         }
@@ -211,7 +208,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             {
                 selectedCarModel = value;
                 OnPropertyChanged(nameof(SelectedCarModel));
-                if (SelectedCarModel != null&&!IsReadOnly)
+                if (SelectedCarModel != null && !IsReadOnly)
                 {
                     IsFilterButtonEnable = true;
                     IsAddButtonEnable = true;
@@ -228,7 +225,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 if (date > DateTime.Now)
                 {
                     MessageBox.Show("Выбранная дата не может быть больше сегодняшней даты.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    date=DateTime.Now;
+                    date = DateTime.Now;
                     return;
                 }
             }
@@ -249,32 +246,35 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 return addCommand ??
                       (addCommand = new RelayCommand((o) =>
                       {
-                          StringBuilder errors = new StringBuilder();
-                          if (String.IsNullOrWhiteSpace(nameClient))
-                              errors.AppendLine("Укажите ФИО клиента.");
-                          if (selectedCarBrand == null)
-                              errors.AppendLine("Укажите марку автомобиля.");
-                          if (selectedCarModel == null)
-                              errors.AppendLine("Укажите модель автомобиля.");
-                          if (String.IsNullOrWhiteSpace(stateNumber))
-                              errors.AppendLine("Укажите гос.номер автомобиля.");
-                          if (AutoServiceContext.GetContext().Cars.FirstOrDefault(A => A.StateNumber == stateNumber) != null)
-                              errors.AppendLine("Такой гос.номер уже существует.");
-                          if (date.ToString() == "")
-                              errors.AppendLine("Введите дату.");
-                          if (errors.Length > 0)
+                          using (var context = new AutoServiceContext())
                           {
-                              MessageBox.Show(errors.ToString(),"Error",MessageBoxButton.OK,MessageBoxImage.Error);
-                              return;
+                              StringBuilder errors = new StringBuilder();
+                              if (String.IsNullOrWhiteSpace(nameClient))
+                                  errors.AppendLine("Укажите ФИО клиента.");
+                              if (selectedCarBrand == null)
+                                  errors.AppendLine("Укажите марку автомобиля.");
+                              if (selectedCarModel == null)
+                                  errors.AppendLine("Укажите модель автомобиля.");
+                              if (String.IsNullOrWhiteSpace(stateNumber))
+                                  errors.AppendLine("Укажите гос.номер автомобиля.");
+                              if (context.Cars.FirstOrDefault(A => A.StateNumber == stateNumber) != null)
+                                  errors.AppendLine("Такой гос.номер уже существует.");
+                              if (date.ToString() == "")
+                                  errors.AppendLine("Введите дату.");
+                              if (errors.Length > 0)
+                              {
+                                  MessageBox.Show(errors.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                  return;
+                              }
+                              Client client = new Client() { NameClient = NameClient };
+                              context.Clients.Add(client);
+                              context.SaveChanges();
+                              Car car = new Car() { StateNumber = StateNumber, Idmodel = SelectedCarModel.Idmodel, DataOfRelease = Date, Idclient = client.Idclient };
+                              context.Cars.Add(car);
+                              context.SaveChanges();
+                              MessageBox.Show("Информация успешно сохранена.", "Success", MessageBoxButton.OK);
+                              RecetAll();
                           }
-                          Client client = new Client() { NameClient = NameClient };
-                          AutoServiceContext.GetContext().Clients.Add(client);
-                          AutoServiceContext.GetContext().SaveChanges();
-                          Car car = new Car() { StateNumber=StateNumber, Idmodel=SelectedCarModel.Idmodel, DataOfRelease=Date, Idclient=client.Idclient };
-                          AutoServiceContext.GetContext().Cars.Add(car);
-                          AutoServiceContext.GetContext().SaveChanges();
-                          MessageBox.Show("Информация успешно сохранена.", "Success", MessageBoxButton.OK);
-                          RecetAll();
                       }
                        ));
             }
@@ -286,28 +286,31 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 return addNewCarToClient ??
                       (addNewCarToClient = new RelayCommand((o) =>
                       {
-                          StringBuilder errors = new StringBuilder();
-                          if (selectedCarBrand == null)
-                              errors.AppendLine("Укажите марку автомобиля.");
-                          if (selectedCarModel == null)
-                              errors.AppendLine("Укажите модель автомобиля.");
-                          if (String.IsNullOrWhiteSpace(stateNumber))
-                              errors.AppendLine("Укажите гос.номер автомобиля.");
-                          if (AutoServiceContext.GetContext().Cars.FirstOrDefault(A => A.StateNumber == stateNumber) != null)
-                              errors.AppendLine("Такая машина уже существует.");
-                          if (date.ToString() == "")
-                              errors.AppendLine("Введите дату.");
-                          if (errors.Length > 0)
+                          using (var context = new AutoServiceContext())
                           {
-                              MessageBox.Show(errors.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                              return;
+                              StringBuilder errors = new StringBuilder();
+                              if (selectedCarBrand == null)
+                                  errors.AppendLine("Укажите марку автомобиля.");
+                              if (selectedCarModel == null)
+                                  errors.AppendLine("Укажите модель автомобиля.");
+                              if (String.IsNullOrWhiteSpace(stateNumber))
+                                  errors.AppendLine("Укажите гос.номер автомобиля.");
+                              if (context.Cars.FirstOrDefault(A => A.StateNumber == stateNumber) != null)
+                                  errors.AppendLine("Такая машина уже существует.");
+                              if (date.ToString() == "")
+                                  errors.AppendLine("Введите дату.");
+                              if (errors.Length > 0)
+                              {
+                                  MessageBox.Show(errors.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                  return;
+                              }
+                              context.SaveChanges();
+                              Car car = new Car() { StateNumber = StateNumber, Idmodel = SelectedCarModel.Idmodel, DataOfRelease = Date, Idclient = SelectedCar.IdclientNavigation.Idclient };
+                              context.Cars.Add(car);
+                              context.SaveChanges();
+                              MessageBox.Show("Информация успешно сохранена.", "Success", MessageBoxButton.OK);
+                              RecetAll();
                           }
-                          AutoServiceContext.GetContext().SaveChanges();
-                          Car car = new Car() { StateNumber = StateNumber, Idmodel = SelectedCarModel.Idmodel, DataOfRelease = Date, Idclient = SelectedCar.IdclientNavigation.Idclient };
-                          AutoServiceContext.GetContext().Cars.Add(car);
-                          AutoServiceContext.GetContext().SaveChanges();
-                          MessageBox.Show("Информация успешно сохранена.", "Success", MessageBoxButton.OK);
-                          RecetAll();
                       }
                        ));
             }
@@ -319,15 +322,20 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 return searchCommand ??
                     (searchCommand = new RelayCommand((o) =>
                     {
-                        if (nameClientFilter != null)
+                        using (var context = new AutoServiceContext())
                         {
-                            Cars = AutoServiceContext.GetContext().Cars.Where(A => A.IdclientNavigation.NameClient.ToLower().Contains(nameClientFilter.ToLower())).ToList();
+                            if (stateNumberFilter != null)
+                            {
+                                var tmp = context.Cars.Where(A => A.StateNumber.ToLower().Contains(stateNumberFilter.ToLower())).ToList();
+                                foreach (var car in tmp)
+                                {
+                                    car.IdclientNavigation = context.Clients.FirstOrDefault(A => A.Idclient == car.Idclient);
+                                    car.IdmodelNavigation = context.Models.FirstOrDefault(A => A.Idmodel == car.Idmodel);
+                                    car.IdmodelNavigation.IdcarBrandNavigation = context.CarBrands.FirstOrDefault(A => A.IdcarBrand == car.IdmodelNavigation.IdcarBrand);
+                                }
+                                Cars = tmp;
+                            }
                         }
-                        if (stateNumberFilter != null)
-                        {
-                            Cars = AutoServiceContext.GetContext().Cars.Where(A => A.StateNumber.ToLower().Contains(stateNumberFilter.ToLower())).ToList();
-                        }
-
                     }));
             }
         }

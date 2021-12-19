@@ -8,12 +8,20 @@ using WpfApp1.ViewModel.Abstract;
 
 namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
 {
-    class DBAdminAutoPartViewModel:BaseViewModel
+    class DBAdminAutoPartViewModel : BaseViewModel
     {
+        Country tmp;
+        List<Country> countries = new List<Country>();
+        private string autoPartName;
+        RelayCommand addAutoPart;
+        RelayCommand resetAll;
+        RelayCommand editAutoPart;
         List<AutoPart> autoParts;
         List<AutoPart> displayAutoParts;
         AutoPart selectedAutoPart;
         bool isEnable = false;
+        bool isAddButtonEnable = true;
+        bool isResetButtonEnable = false;
         public bool IsEnable
         {
             get => isEnable;
@@ -29,13 +37,17 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
         }
         private void SetProperties()
         {
-            autoParts = AutoServiceContext.GetContext().AutoParts.ToList();
-            var countries = AutoServiceContext.GetContext().Countries.ToList();
-            foreach (var country in autoParts)
+            using (var context = new AutoServiceContext())
             {
-                country.IdcountryNavigation = countries.FirstOrDefault(A => A.Idcountry == country.Idcountry);
+                countries = context.Countries.ToList();
+                autoParts = context.AutoParts.ToList();
+                var _countries = context.Countries.ToList();
+                foreach (var country in autoParts)
+                {
+                    country.IdcountryNavigation = _countries.FirstOrDefault(A => A.Idcountry == country.Idcountry);
+                }
+                AutoParts = autoParts;
             }
-            displayAutoParts = autoParts;
         }
         public List<AutoPart> AutoParts
         {
@@ -54,13 +66,35 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             {
                 selectedAutoPart = value;
                 OnPropertyChanged(nameof(SelectedAutoPart));
-                IsEnable = true;
-                AutoPartName = SelectedAutoPart.NameAutoPart;
-                SelectedCountry = SelectedAutoPart.IdcountryNavigation;
+                if (selectedAutoPart != null)
+                {
+                    IsEnable = true;
+                    AutoPartName = SelectedAutoPart.NameAutoPart;
+                    SelectedCountry = SelectedAutoPart.IdcountryNavigation;
+                    IsAddButtonEnable = false;
+                    IsResetButtonEnable = true;
+                }
+            }
+        }
+        public bool IsAddButtonEnable
+        {
+            get => isAddButtonEnable;
+            set
+            {
+                isAddButtonEnable = value;
+                OnPropertyChanged(nameof(IsAddButtonEnable));
+            }
+        }
+        public bool IsResetButtonEnable
+        {
+            get => isResetButtonEnable;
+            set
+            {
+                isResetButtonEnable = value;
+                OnPropertyChanged(nameof(IsResetButtonEnable));
             }
         }
 
-        RelayCommand editAutoPart;
         public RelayCommand EditAutoPart
         {
             get
@@ -68,37 +102,39 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 return editAutoPart ??
                       (editAutoPart = new RelayCommand((o) =>
                       {
-                          if (MessageBox.Show($"Вы точно хотите редактировать выбранную деталь под названием " +
-                              $"{SelectedAutoPart.NameAutoPart}?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                          using (var context = new AutoServiceContext())
                           {
-                              try
+                              if (MessageBox.Show($"Вы точно хотите редактировать выбранную деталь под названием " +
+                                  $"{SelectedAutoPart.NameAutoPart}?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                               {
-                                  AutoPart tmp = AutoServiceContext.GetContext().AutoParts.FirstOrDefault(A => A.IdautoPart == SelectedAutoPart.IdautoPart);
-                                  tmp.NameAutoPart = AutoPartName;
-                                  tmp.IdcountryNavigation = SelectedCountry;
-                                  AutoServiceContext.GetContext().AutoParts.Update(tmp);
-                                  MessageBox.Show("Данные обновлены.");
-                                  AutoServiceContext.GetContext().SaveChanges();
+                                  try
+                                  {
+                                      AutoPart tmp = context.AutoParts.FirstOrDefault(A => A.IdautoPart == SelectedAutoPart.IdautoPart);
+                                      tmp.NameAutoPart = AutoPartName;
+                                      tmp.IdcountryNavigation = SelectedCountry;
+                                      context.AutoParts.Update(tmp);
+                                      MessageBox.Show("Данные обновлены.");
+                                      context.SaveChanges();
 
 
+                                  }
+                                  catch (Exception ex)
+                                  {
+                                      MessageBox.Show(ex.Message);
+                                  }
+                                  SetProperties();
+                                  AutoParts = displayAutoParts;
+                                  IsEnable = false;
+                                  AutoPartName = null;
+                                  SelectedCountry = null;
+                                  IsAddButtonEnable = true;
+                                  IsResetButtonEnable = false;
                               }
-                              catch (Exception ex)
-                              {
-                                  MessageBox.Show(ex.Message);
-                              }
-                              SetProperties();
-                              AutoParts = displayAutoParts;
-                              IsEnable = false;
-                              AutoPartName = null;
-                              selectedCountry = null;
                           }
                       }));
             }
         }
-        Country tmp;
-        List<Country> countries = AutoServiceContext.GetContext().Countries.ToList();
-        private string autoPartName;
-        RelayCommand addAutoPart;
+
         public List<Country> CountryNames
         {
             get => countries;
@@ -116,6 +152,10 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             {
                 selectedCountry = value;
                 OnPropertyChanged(nameof(SelectedCountry));
+                if (selectedCountry != null)
+                {
+                    IsResetButtonEnable = true;
+                }
             }
         }
         public string AutoPartName
@@ -125,6 +165,10 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             {
                 autoPartName = value;
                 OnPropertyChanged(nameof(AutoPartName));
+                if (autoPartName != null)
+                {
+                    IsResetButtonEnable = true;
+                }
             }
         }
         public RelayCommand AddAutoPart
@@ -134,38 +178,63 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 return addAutoPart ??
                       (addAutoPart = new RelayCommand((o) =>
                       {
-                          StringBuilder errors = new StringBuilder();
-                          if (String.IsNullOrWhiteSpace(autoPartName))
-                              errors.AppendLine("Укажите название запчасти.");
-                          if (selectedCountry == null)
-                              errors.AppendLine("Укажите страну производитель.");
-                          if (errors.Length > 0)
+                          using (var context = new AutoServiceContext())
                           {
-                              MessageBox.Show(errors.ToString());
-                              return;
-                          }
+                              StringBuilder errors = new StringBuilder();
+                              if (String.IsNullOrWhiteSpace(autoPartName))
+                                  errors.AppendLine("Укажите название запчасти.");
+                              if (selectedCountry == null)
+                                  errors.AppendLine("Укажите страну производитель.");
+                              if ((context.AutoParts.FirstOrDefault(A => A.NameAutoPart == AutoPartName)) != null)
+                                  errors.AppendLine("Такая запчасть уже существует.");
+                              if (errors.Length > 0)
+                              {
+                                  MessageBox.Show(errors.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                  return;
+                              }
 
-                          tmp = countries.FirstOrDefault(A => A.NameCountry == selectedCountry.NameCountry);
-                          int id = tmp.Idcountry;
-                          AutoPart tmpPart = new AutoPart() { NameAutoPart = autoPartName, Idcountry = id };
+                              tmp = countries.FirstOrDefault(A => A.NameCountry == selectedCountry.NameCountry);
+                              int id = tmp.Idcountry;
+                              AutoPart tmpPart = new AutoPart() { NameAutoPart = autoPartName, Idcountry = id };
 
-                          AutoServiceContext.GetContext().AutoParts.Add(tmpPart);
-                          try
-                          {
-                              AutoServiceContext.GetContext().SaveChanges();
-                              MessageBox.Show("Информация сохранена!");
+                              context.AutoParts.Add(tmpPart);
+                              try
+                              {
+                                  context.SaveChanges();
+                                  MessageBox.Show("Информация сохранена!");
+                              }
+                              catch (Exception ex)
+                              {
+                                  MessageBox.Show(ex.Message.ToString());
+                              }
+                              SetProperties();
+                              AutoParts = displayAutoParts;
+                              AutoPartName = null;
+                              SelectedCountry = null;
+                              IsResetButtonEnable = false;
                           }
-                          catch (Exception ex)
-                          {
-                              MessageBox.Show(ex.Message.ToString());
-                          }
-                          SetProperties();
-                          AutoParts = displayAutoParts;
-                          AutoPartName = null;
-                          selectedCountry = null;
                       }
                        ));
             }
         }
+        public RelayCommand ResetAll
+        {
+            get
+            {
+                return resetAll ??
+                      (resetAll = new RelayCommand((o) =>
+                      {
+                          SetProperties();
+                          AutoParts = displayAutoParts;
+                          AutoPartName = null;
+                          SelectedCountry = null;
+                          IsResetButtonEnable = false;
+                          IsAddButtonEnable = true;
+                          IsEnable = false;
+                      }
+                       ));
+            }
+        }
+
     }
 }

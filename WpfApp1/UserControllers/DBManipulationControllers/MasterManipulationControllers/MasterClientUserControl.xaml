@@ -6,17 +6,17 @@
              xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.MasterManipulationControllers" xmlns:dbmastermanipulationviewmodel="clr-namespace:WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewModel" d:DataContext="{d:DesignInstance Type=dbmastermanipulationviewmodel:MasterClientViewModel}"
              mc:Ignorable="d" Height="600" Width="1000">
     <Grid>
-        <TextBox HorizontalAlignment="Left" IsReadOnly="{Binding IsReadOnly}" Text="{Binding NameClient}" Margin="116,114,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Text="{Binding StateNumber}" Margin="116,282,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button Content="Добавить нового клиента" IsEnabled="{Binding IsAddButtonEnable}"  Command="{Binding AddCommand}" HorizontalAlignment="Left" Margin="95,417,0,0" VerticalAlignment="Top" Width="163" Height="26"/>
-        <Label Content="ФИО" HorizontalAlignment="Left" Margin="116,83,0,0" VerticalAlignment="Top"/>
-        <Label Content="Марка машины" HorizontalAlignment="Left" Margin="116,138,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" IsReadOnly="{Binding IsReadOnly}" Text="{Binding NameClient}" Margin="116,101,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="159" Height="27"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding StateNumber}" Margin="116,277,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="159" Height="27"/>
+        <Button Content="Добавить нового клиента" IsEnabled="{Binding IsAddButtonEnable}"  Command="{Binding AddCommand}" HorizontalAlignment="Left" Margin="95,417,0,0" VerticalAlignment="Top" Width="163" Height="32"/>
+        <Label Content="ФИО" HorizontalAlignment="Left" Margin="116,75,0,0" VerticalAlignment="Top"/>
+        <Label Content="Марка машины" HorizontalAlignment="Left" Margin="116,133,0,0" VerticalAlignment="Top"/>
         <Label Content="Модель машины" HorizontalAlignment="Left" Margin="116,192,0,0" VerticalAlignment="Top"/>
         <Label Content="Гос. Номер" HorizontalAlignment="Left" Margin="116,251,0,0" VerticalAlignment="Top"/>
         <Label Content="Дата выпуска" HorizontalAlignment="Left" Margin="116,312,0,0" VerticalAlignment="Top"/>
 
-        <ComboBox x:Name="CarModel" ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedCarModel}" HorizontalAlignment="Left" DisplayMemberPath="NameModel" Margin="116,223,0,0" VerticalAlignment="Top" Width="120"/>
-        <ComboBox x:Name="CarBrand" ItemsSource="{Binding CarBrands}" SelectedItem="{Binding SelectedCarBrand}" HorizontalAlignment="Left" DisplayMemberPath="NameCarBrand" Margin="116,169,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="CarModel" ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedCarModel}" HorizontalAlignment="Left" DisplayMemberPath="NameModel" Margin="116,219,0,0" VerticalAlignment="Top" Width="159" Height="27"/>
+        <ComboBox x:Name="CarBrand" ItemsSource="{Binding CarBrands}" SelectedItem="{Binding SelectedCarBrand}" HorizontalAlignment="Left" DisplayMemberPath="NameCarBrand" Margin="116,159,0,0" VerticalAlignment="Top" Width="159" Height="27"/>
 
         <DataGrid x:Name="AutoConcerns" Width="600" Height="350" SelectedItem = "{Binding SelectedCar}" Margin="249,29,10,120" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Cars}" SelectionMode="Single">
             <DataGrid.Columns>
@@ -30,16 +30,14 @@
         <Button Content="Добавить еще машину клиенту" 
             Command="{Binding AddNewCarToClient}" 
                IsEnabled="{Binding IsAddNewCarButtonEnable}"
-            HorizontalAlignment="Left" Margin="95,468,0,0" VerticalAlignment="Top" Width="193" Height="26"/>
+            HorizontalAlignment="Left" Margin="95,468,0,0" VerticalAlignment="Top" Width="193" Height="32"/>
         <Button Content="Сбросить все"
             IsEnabled="{Binding IsFilterButtonEnable}"
             Command="{Binding ResetFilters}"
-            HorizontalAlignment="Left" Margin="754,468,0,0" VerticalAlignment="Top" Width="118" Height="26"/>
-        <DatePicker HorizontalAlignment="Left" SelectedDate="{Binding Date}" Margin="116,343,0,0" VerticalAlignment="Top" Width="120" Height="28"/>
-        <Label Content="Поиск по ФИО" HorizontalAlignment="Left" Margin="351,447,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Text="{Binding NameClientFilter}" Margin="351,481,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Поиск по гос.номеру" HorizontalAlignment="Left" Margin="509,447,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Text="{Binding StateNumberFilter}" Margin="509,481,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button Content="Поиск" Command="{Binding SearchCommand}" HorizontalAlignment="Left" Margin="663,479,0,0" VerticalAlignment="Top" Width="50" Height="20"/>
+            HorizontalAlignment="Left" Margin="753,472,0,0" VerticalAlignment="Top" Width="118" Height="32"/>
+        <DatePicker HorizontalAlignment="Left" SelectedDate="{Binding Date}" Margin="116,343,0,0" VerticalAlignment="Top" Width="159" Height="27"/>
+        <Label Content="Поиск по гос.номеру" HorizontalAlignment="Left" Margin="427,441,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding StateNumberFilter}" Margin="430,472,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="159" Height="27"/>
+        <Button Content="Поиск" Command="{Binding SearchCommand}" HorizontalAlignment="Left" Margin="620,472,0,0" VerticalAlignment="Top" Width="50" Height="32"/>
     </Grid>
 </UserControl>

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers"
+             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers" xmlns:dbadminmanipulationviewmodel="clr-namespace:WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel" d:DataContext="{d:DesignInstance Type=dbadminmanipulationviewmodel:DBAdminAutoConcernViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
     <Grid Margin="0,0,0,0">
@@ -15,19 +15,20 @@
         </DataGrid>
         <Button Content="Добавить" 
                 Command="{Binding AddAutoConcern}" 
-                HorizontalAlignment="Left" Margin="126,463,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
+                HorizontalAlignment="Left" IsEnabled="{Binding IsAddButtonEnable}" Margin="126,457,0,0" VerticalAlignment="Top" Width="81" Height="32"/>
         <Button Content="Удалить" 
                 IsEnabled="{Binding IsEnable}" 
                 Command="{Binding DeletingAutoconcern}"
-                HorizontalAlignment="Left" Margin="359,463,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
-        <TextBox HorizontalAlignment="Left" Text="{Binding AutoConcernName}" Margin="110,115,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                HorizontalAlignment="Left" Margin="359,457,0,0" VerticalAlignment="Top" Width="80" Height="32"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding AutoConcernName}" Margin="110,115,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Width="159" Height="27"/>
         <ComboBox x:Name="CountriesBox" HorizontalAlignment="Left"  
             ItemsSource="{Binding CountryNames}" 
             DisplayMemberPath="NameCountry" 
-            SelectedItem="{Binding SelectedCountry}"  Margin="110,237,0,0" VerticalAlignment="Top" Width="120"/>
+            SelectedItem="{Binding SelectedCountry}"  Margin="110,237,0,0" VerticalAlignment="Top" Width="159" Height="27"/>
         <Label Content="Введите название" HorizontalAlignment="Left" Margin="110,84,0,0" VerticalAlignment="Top"/>
         <Label Content="Выберете страну" HorizontalAlignment="Left" Margin="110,206,0,0" VerticalAlignment="Top"/>
-        <Button Content="Редактировать" Command="{Binding EditConcern}" IsEnabled="{Binding IsEnable}" HorizontalAlignment="Left" Margin="228,463,0,0" VerticalAlignment="Top" Height="26" Width="112"/>
+        <Button Content="Редактировать" Command="{Binding EditConcern}" IsEnabled="{Binding IsEnable}" HorizontalAlignment="Left" Margin="228,457,0,0" VerticalAlignment="Top" Height="32" Width="112"/>
+        <Button Content="Сбросить все" HorizontalAlignment="Left" IsEnabled="{Binding IsResetButtonEnable}" Command="{Binding ResetAll}" Margin="459,457,0,0" VerticalAlignment="Top" Height="32" Width="101"/>
 
     </Grid>
 </UserControl>

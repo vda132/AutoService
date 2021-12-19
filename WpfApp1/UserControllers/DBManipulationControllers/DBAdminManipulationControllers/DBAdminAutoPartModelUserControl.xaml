@@ -3,11 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers"
+             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers" xmlns:dbadminmanipulationviewmodel="clr-namespace:WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel" d:DataContext="{d:DesignInstance Type=dbadminmanipulationviewmodel:DBAdminAutoPartModelViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
-        <DataGrid x:Name="AutoConcerns"  Width="600" Height="350" SelectedItem = "{Binding SelectedAutoPart}"   Margin="249,29,10,120" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Compatibilities}" SelectionMode="Single">
+        <DataGrid x:Name="AutoConcerns"  Width="600" Height="350"  Margin="249,29,10,120" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Compatibilities}" SelectionMode="Single">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Название детали" Binding="{Binding IdautoPartNavigation.NameAutoPart}" Width="*"/>
                 <DataGridTextColumn Header="Марка автомобиля" Width="*" Binding="{Binding IdmodelNavigation.IdcarBrandNavigation.NameCarBrand}"/>
@@ -16,27 +16,30 @@
         </DataGrid>
         <Button Content="Добавить" 
             Command="{Binding AddComp}" 
-            HorizontalAlignment="Left" Margin="110,396,0,0" VerticalAlignment="Top" Width="78" Height="26"/>
+            HorizontalAlignment="Left" Margin="110,390,0,0" VerticalAlignment="Top" Width="81" Height="32"/>
         <Label Content="Выберете марку" HorizontalAlignment="Left" Margin="110,69,0,0" VerticalAlignment="Top"/>
         <ComboBox HorizontalAlignment="Left" ItemsSource="{Binding Brands}" 
             SelectedItem="{Binding SelectedCarBrand}"
             DisplayMemberPath="NameCarBrand" 
             Margin="110,100,0,0" 
-            VerticalAlignment="Top" Width="120"/>
+            VerticalAlignment="Top"  Width="159" Height="27"/>
         <Label Content="Выберете модель" 
             HorizontalAlignment="Left" Margin="110,141,0,0" VerticalAlignment="Top"/>
         <ComboBox HorizontalAlignment="Left"
-            IsEnabled="{Binding IsEnable}"
             ItemsSource="{Binding Models}"
             SelectedItem="{Binding SelectedModel}"
             DisplayMemberPath="NameModel" 
                   
-            Margin="110,172,0,0" VerticalAlignment="Top" Width="120"/>
+            Margin="110,172,0,0" VerticalAlignment="Top"  Width="159" Height="27"/>
         <Label Content="Выберете запчасть" HorizontalAlignment="Left" Margin="110,207,0,0" VerticalAlignment="Top"/>
         <ComboBox HorizontalAlignment="Left"
             ItemsSource="{Binding AutoParts}"
             SelectedItem="{Binding SelectedAutoPart}"
             DisplayMemberPath="NameAutoPart" 
-            Margin="110,236,0,0" VerticalAlignment="Top" Width="120"/>
+            Margin="110,236,0,0" VerticalAlignment="Top"  Width="159" Height="27"/>
+        <Button Content="Сбросить все" 
+                IsEnabled="{Binding IsResetEnable}"
+            Command="{Binding ResetAll}" 
+            HorizontalAlignment="Left" Margin="320,477,0,0" VerticalAlignment="Top" Width="101" Height="32"/>
     </Grid>
 </UserControl>

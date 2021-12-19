@@ -14,28 +14,25 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
     {
         List<AutoService> autoServices;
         List<AutoService> displayAutoServices;
-        List<Client> clients = AutoServiceContext.GetContext().Clients.ToList();
+        List<Client> clients = new List<Client>();
         Client selectedClient;
         List<CarBrand> carBrands;
         CarBrand selectedCarBrand;
         AutoService service;
-        AutoService selectedAutoService;
         List<Model> models;
         Model selectedModel;
-        List<ServiceType> serviceTypes = AutoServiceContext.GetContext().ServiceTypes.ToList();
+        List<ServiceType> serviceTypes = new List<ServiceType>();
         ServiceType selectedServiceType;
         List<AutoPart> autoParts;
         AutoPart selectedAutoPart;
         List<Car> stateNumbers;
         Car selectedStateNumber;
         Visibility visibility = Visibility.Hidden;
-        Visibility visibilityReportButton = Visibility.Hidden;
         DateTime date = DateTime.Now;
         RelayCommand addService;
         RelayCommand addAutoPartToService;
         RelayCommand endAddingAutoPartToService;
         RelayCommand resetCommand;
-        RelayCommand reporButtonCommnad;
         decimal priceForRepairs;
         string nameClientFilter;
         string nameMarkFilter;
@@ -46,8 +43,8 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
         bool isEnableEndButton = false;
         bool isResetButtonEnable = false;
         bool isBrandEnable = false;
-        bool isModelEnable=false;
-        bool isReadOnly=false;
+        bool isModelEnable = false;
+        bool isReadOnly = false;
         bool isStateNumberEnable = false;
         bool isClientEnable = true;
         bool isServiceTypeEnable = false;
@@ -57,23 +54,29 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
         }
         private void SetProperties()
         {
-            autoServices = AutoServiceContext.GetContext().AutoServices.ToList();
-            var workers = AutoServiceContext.GetContext().Workers.ToList();
-            var cars = AutoServiceContext.GetContext().Cars.ToList();
-            var service = AutoServiceContext.GetContext().ServiceTypes.ToList();
-            var models = AutoServiceContext.GetContext().Models.ToList();
-            var clients = AutoServiceContext.GetContext().Clients.ToList();
-            var brands = AutoServiceContext.GetContext().CarBrands.ToList();
-            foreach (var element in autoServices)
+            using (var context = new AutoServiceContext())
             {
-                element.IdserviceTypeNavigation = service.FirstOrDefault(A => A.IdserviceType == element.IdserviceType);
-                element.IdworkerNavigation = workers.FirstOrDefault(A => A.Idworker == element.Idworker);
-                element.StateNumberNavigation = cars.FirstOrDefault(A => A.StateNumber == element.StateNumber);
-                element.StateNumberNavigation.IdmodelNavigation = models.FirstOrDefault(A => A.Idmodel == element.StateNumberNavigation.Idmodel);
-                element.StateNumberNavigation.IdclientNavigation = clients.FirstOrDefault(A => A.Idclient == element.StateNumberNavigation.Idclient);
-                element.StateNumberNavigation.IdmodelNavigation.IdcarBrandNavigation = brands.FirstOrDefault(A => A.IdcarBrand == element.StateNumberNavigation.IdmodelNavigation.IdcarBrand);
+                clients = context.Clients.ToList();
+                serviceTypes = context.ServiceTypes.ToList();
+                autoServices = context.AutoServices.ToList();
+                var workers = context.Workers.ToList();
+                var cars = context.Cars.ToList();
+                var service = context.ServiceTypes.ToList();
+                var models = context.Models.ToList();
+                var _clients = context.Clients.ToList();
+                var brands = context.CarBrands.ToList();
+                foreach (var element in autoServices)
+                {
+                    element.IdworkerNavigation = workers.FirstOrDefault(A => A.Idworker == element.Idworker);
+                    element.IdserviceTypeNavigation = service.FirstOrDefault(A => A.IdserviceType == element.IdserviceType);
+                    element.StateNumberNavigation = cars.FirstOrDefault(A => A.StateNumber == element.StateNumber);
+                    element.StateNumberNavigation.IdmodelNavigation = models.FirstOrDefault(A => A.Idmodel == element.StateNumberNavigation.Idmodel);
+                    element.StateNumberNavigation.IdclientNavigation = _clients.FirstOrDefault(A => A.Idclient == element.StateNumberNavigation.Idclient);
+                    element.StateNumberNavigation.IdmodelNavigation.IdcarBrandNavigation = brands.FirstOrDefault(A => A.IdcarBrand == element.StateNumberNavigation.IdmodelNavigation.IdcarBrand);
+                }
+                displayAutoServices = autoServices;
+                AutoServices = displayAutoServices;
             }
-            displayAutoServices = autoServices;
         }
         private void ResetAll()
         {
@@ -130,23 +133,26 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 OnPropertyChanged(nameof(SelectedClient));
                 if (selectedClient != null)
                 {
-                    List<CarBrand> tmp = new List<CarBrand>();
-                    List<Model> tmpModel = new List<Model>();
-                    List<Car> tmpStateNumber = new List<Car>();
-                    var clientCars = AutoServiceContext.GetContext().Cars.Where(A => A.Idclient == selectedClient.Idclient).ToList();
-                    foreach (var brand in clientCars)
+                    using (var context = new AutoServiceContext())
                     {
-                        brand.IdmodelNavigation = AutoServiceContext.GetContext().Models.FirstOrDefault(A => A.Idmodel == brand.Idmodel);
-                        tmpModel.Add(brand.IdmodelNavigation);
-                        brand.IdmodelNavigation.IdcarBrandNavigation = AutoServiceContext.GetContext().CarBrands.FirstOrDefault(A => A.IdcarBrand == brand.IdmodelNavigation.IdcarBrand);
-                        tmp.Add(AutoServiceContext.GetContext().CarBrands.FirstOrDefault(A => A == brand.IdmodelNavigation.IdcarBrandNavigation));
-                        tmpStateNumber.Add(AutoServiceContext.GetContext().Cars.FirstOrDefault(A => A.StateNumber == brand.StateNumber));
+                        List<CarBrand> tmp = new List<CarBrand>();
+                        List<Model> tmpModel = new List<Model>();
+                        List<Car> tmpStateNumber = new List<Car>();
+                        var clientCars = context.Cars.Where(A => A.Idclient == selectedClient.Idclient).ToList();
+                        foreach (var brand in clientCars)
+                        {
+                            brand.IdmodelNavigation = context.Models.FirstOrDefault(A => A.Idmodel == brand.Idmodel);
+                            tmpModel.Add(brand.IdmodelNavigation);
+                            brand.IdmodelNavigation.IdcarBrandNavigation = context.CarBrands.FirstOrDefault(A => A.IdcarBrand == brand.IdmodelNavigation.IdcarBrand);
+                            tmp.Add(context.CarBrands.FirstOrDefault(A => A == brand.IdmodelNavigation.IdcarBrandNavigation));
+                            tmpStateNumber.Add(context.Cars.FirstOrDefault(A => A.StateNumber == brand.StateNumber));
+                        }
+                        StateNumbers = tmpStateNumber.Distinct().ToList();
+                        CarBrands = tmp.Distinct().ToList();
+                        Models = tmpModel.Distinct().ToList();
+                        IsResetButtonEnable = true;
+                        IsBrandEnable = true;
                     }
-                    StateNumbers = tmpStateNumber.Distinct().ToList();
-                    CarBrands = tmp.Distinct().ToList();
-                    Models = tmpModel.Distinct().ToList();
-                    IsResetButtonEnable = true;
-                    IsBrandEnable = true;
                 }
             }
         }
@@ -168,19 +174,22 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 OnPropertyChanged(nameof(SelectedCarBrand));
                 if (selectedCarBrand != null && selectedClient != null)
                 {
-                    List<Model> tmp = new List<Model>();
-                    List<Car> tmpStateNumber = new List<Car>();
-                    var models = AutoServiceContext.GetContext().Models.ToList();
-                    var clientCars = AutoServiceContext.GetContext().Cars.Where(A => A.Idclient == selectedClient.Idclient&&A.IdmodelNavigation.IdcarBrandNavigation.IdcarBrand==selectedCarBrand.IdcarBrand).ToList();
-                    foreach (var tmpt in clientCars)
+                    using (var context = new AutoServiceContext())
                     {
-                        tmpStateNumber.Add(AutoServiceContext.GetContext().Cars.FirstOrDefault(A => A.StateNumber == tmpt.StateNumber));
-                        tmp.Add(AutoServiceContext.GetContext().Models.FirstOrDefault(A => A.Idmodel == tmpt.Idmodel));
+                        List<Model> tmp = new List<Model>();
+                        List<Car> tmpStateNumber = new List<Car>();
+                        var models = context.Models.ToList();
+                        var clientCars = context.Cars.Where(A => A.Idclient == selectedClient.Idclient && A.IdmodelNavigation.IdcarBrandNavigation.IdcarBrand == selectedCarBrand.IdcarBrand).ToList();
+                        foreach (var tmpt in clientCars)
+                        {
+                            tmpStateNumber.Add(context.Cars.FirstOrDefault(A => A.StateNumber == tmpt.StateNumber));
+                            tmp.Add(context.Models.FirstOrDefault(A => A.Idmodel == tmpt.Idmodel));
+                        }
+                        StateNumbers = tmpStateNumber.Distinct().ToList();
+                        Models = tmp.Distinct().ToList();
+                        IsResetButtonEnable = true;
+                        IsModelEnable = true;
                     }
-                    StateNumbers = tmpStateNumber.Distinct().ToList();
-                    Models = tmp.Distinct().ToList();
-                    IsResetButtonEnable = true;
-                    IsModelEnable = true;
                 }
             }
         }
@@ -193,8 +202,11 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 OnPropertyChanged(nameof(NameClientFilter));
                 if (nameClientFilter != null)
                 {
-                    Clients = AutoServiceContext.GetContext().Clients.Where(A => A.NameClient.ToLower().Contains(nameClientFilter.ToLower())).ToList();
-                    IsResetButtonEnable = true;
+                    using (var context = new AutoServiceContext())
+                    {
+                        Clients = context.Clients.Where(A => A.NameClient.ToLower().Contains(nameClientFilter.ToLower())).ToList();
+                        IsResetButtonEnable = true;
+                    }
                 }
             }
         }
@@ -207,8 +219,12 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 OnPropertyChanged(nameof(NameMarkFilter));
                 if (nameMarkFilter != null)
                 {
-                   CarBrands = AutoServiceContext.GetContext().CarBrands.Where(A => A.NameCarBrand.ToLower().Contains(nameMarkFilter.ToLower())).ToList();
-                   IsResetButtonEnable = true;
+                    List<CarBrand> tmp = new List<CarBrand>();
+                    List<CarBrand> tmp1 = new List<CarBrand>();
+                    tmp1 = CarBrands;
+                    tmp = tmp1.Where(A => A.NameCarBrand.ToLower().Contains(nameMarkFilter.ToLower())).ToList();
+                    IsResetButtonEnable = true;
+                    CarBrands = tmp;
                 }
             }
         }
@@ -221,8 +237,11 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 OnPropertyChanged(nameof(NameModelFilter));
                 if (nameModelFilter != null)
                 {
-                    Models = AutoServiceContext.GetContext().Models.Where(A => A.NameModel.ToLower().Contains(nameModelFilter.ToLower())).ToList();
-                    IsResetButtonEnable = true;
+                    using (var context = new AutoServiceContext())
+                    {
+                        Models = context.Models.Where(A => A.NameModel.ToLower().Contains(nameModelFilter.ToLower())).ToList();
+                        IsResetButtonEnable = true;
+                    }
                 }
             }
         }
@@ -233,10 +252,19 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             {
                 nameAutoPartFilter = value;
                 OnPropertyChanged(nameof(NameAutoPartFilter));
-                if (nameAutoPartFilter != null)
+                if (nameAutoPartFilter != null && selectedModel != null)
                 {
-                    AutoParts = AutoServiceContext.GetContext().AutoParts.Where(A => A.NameAutoPart.ToLower().Contains(nameAutoPartFilter.ToLower())).ToList();
-                    IsResetButtonEnable = true;
+                    using (var context = new AutoServiceContext())
+                    {
+                        List<Compatibility> compatibilities = context.Compatibilities.Where(A => A.Idmodel == selectedModel.Idmodel).ToList();
+                        List<AutoPart> tmpAutoParts = new List<AutoPart>();
+                        foreach (var comp in compatibilities)
+                        {
+                            tmpAutoParts.Add(context.AutoParts.FirstOrDefault(A => A.IdautoPart == comp.IdautoPart && A.NameAutoPart.ToLower().Contains(nameAutoPartFilter.ToLower())));
+                        }
+                        AutoParts = tmpAutoParts;
+                        IsResetButtonEnable = true;
+                    }
                 }
             }
         }
@@ -258,10 +286,13 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 OnPropertyChanged(nameof(SelectedModel));
                 if (selectedModel != null && selectedCarBrand != null && selectedClient != null)
                 {
-                    var cars = AutoServiceContext.GetContext().Cars.Where(A=>A.Idclient==selectedClient.Idclient&&A.Idmodel==selectedModel.Idmodel).ToList();
-                    StateNumbers = cars;
-                    IsResetButtonEnable = true;
-                    IsStateNumberEnable = true;
+                    using (var context = new AutoServiceContext())
+                    {
+                        var cars = context.Cars.Where(A => A.Idclient == selectedClient.Idclient && A.Idmodel == selectedModel.Idmodel).ToList();
+                        StateNumbers = cars;
+                        IsResetButtonEnable = true;
+                        IsStateNumberEnable = true;
+                    }
                 }
             }
         }
@@ -360,29 +391,6 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 }
             }
         }
-        public AutoService SelectedAutoService
-        {
-            get => selectedAutoService;
-            set
-            {
-                selectedAutoService = value;
-                OnPropertyChanged(nameof(SelectedAutoService));
-                VisibilityReportButton = Visibility.Hidden;
-                if (selectedAutoService != null && selectedAutoService.Idworker==Navigation.MasterNavigation.UserId && selectedAutoService.IdserviceType==AutoServiceContext.GetContext().ServiceTypes.FirstOrDefault(A=>A.NameServiceType=="Ремонт").IdserviceType)
-                {
-                    VisibilityReportButton = Visibility.Visible;
-                }
-            }
-        }
-        public Visibility VisibilityReportButton
-        {
-            get => visibilityReportButton;
-            set
-            {
-                visibilityReportButton = value;
-                OnPropertyChanged(nameof(VisibilityReportButton));
-            }
-        }
         public List<ServiceType> ServiceTypes
         {
             get => serviceTypes;
@@ -399,28 +407,35 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             {
                 selectedServiceType = value;
                 OnPropertyChanged(nameof(SelectedServiceType));
-                if (selectedServiceType == AutoServiceContext.GetContext().ServiceTypes.FirstOrDefault(A=>A.NameServiceType=="Ремонт") && selectedModel != null)
+                if (selectedServiceType != null)
                 {
-                    Visibility = Visibility.Visible;
-                    List<AutoPart> tmpParts = new List<AutoPart>();
-                    var autoParts = AutoServiceContext.GetContext().Compatibilities.Where(A=>A.Idmodel==selectedModel.Idmodel).ToList();
-                    foreach (var autoPart in autoParts)
+                    using (var context = new AutoServiceContext())
                     {
-                        tmpParts.Add(AutoServiceContext.GetContext().AutoParts.FirstOrDefault(A => A.IdautoPart == autoPart.IdautoPart));
+                        if (selectedServiceType.NameServiceType == context.ServiceTypes.FirstOrDefault(A => A.NameServiceType == "Ремонт").NameServiceType && SelectedModel != null)
+                        {
+
+                            Visibility = Visibility.Visible;
+                            List<AutoPart> tmpParts = new List<AutoPart>();
+                            var autoParts = context.Compatibilities.Where(A => A.Idmodel == selectedModel.Idmodel).ToList();
+                            foreach (var autoPart in autoParts)
+                            {
+                                tmpParts.Add(context.AutoParts.FirstOrDefault(A => A.IdautoPart == autoPart.IdautoPart));
+                            }
+                            AutoParts = tmpParts;
+                        }
+                        else
+                        {
+                            Visibility = Visibility.Hidden;
+                        }
                     }
-                    AutoParts = tmpParts;
-                    
+
+                    IsResetButtonEnable = true;
+                    IsReadOnly = true;
+                    IsClientEnable = false;
+                    IsBrandEnable = false;
+                    IsModelEnable = false;
+                    IsStateNumberEnable = false;
                 }
-                else
-                {
-                    Visibility = Visibility.Hidden;
-                }
-                IsResetButtonEnable = true;
-                IsReadOnly = true;
-                IsClientEnable = false;
-                IsBrandEnable = false;
-                IsModelEnable = false;
-                IsStateNumberEnable = false;
             }
         }
         public List<AutoPart> AutoParts
@@ -457,9 +472,9 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             {
                 selectedAutoPart = value;
                 OnPropertyChanged(nameof(SelectedAutoPart));
-                if (selectedAutoPart != null) {
+                if (selectedAutoPart != null)
+                {
                     IsResetButtonEnable = true;
-                    IsEnable = true;
                 }
             }
         }
@@ -494,63 +509,65 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 return addService ??
                       (addService = new RelayCommand((o) =>
                       {
-                          StringBuilder errors = new StringBuilder();
-                          if (SelectedClient == null)
-                              errors.AppendLine("Выберите клиента.");
-                          if (SelectedCarBrand == null)
-                              errors.AppendLine("Выберите марку.");
-                          if (SelectedModel == null)
-                              errors.AppendLine("Выберите модель.");
-                          if (SelectedStateNumber == null)
-                              errors.AppendLine("Выберите гос.номер.");
-                          if (Date.ToString() == "")
-                              errors.AppendLine("Выберите дату.");
-                          if (SelectedServiceType == null)
-                              errors.AppendLine("Выберите тип обслуживания.");
-                          if (errors.Length > 0)
+                          using (var context = new AutoServiceContext())
                           {
-                              MessageBox.Show(errors.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                              return;
-                          }
-                          if (selectedServiceType.NameServiceType == "Диагностика" || selectedServiceType.NameServiceType == "Консультация")
-                          {
-                              ServiceType serviceType = AutoServiceContext.GetContext().ServiceTypes.FirstOrDefault(A => A.IdserviceType == selectedServiceType.IdserviceType);
-                              service = new AutoService() { StateNumber = selectedStateNumber.StateNumber, Idworker = Navigation.MasterNavigation.UserId, DateAutoService = Date, IdserviceType = selectedServiceType.IdserviceType, Price = (serviceType.PriceServiceType * Convert.ToDecimal(1.2)) };
-                              AutoServiceContext.GetContext().AutoServices.Add(service);
-                              try
+                              StringBuilder errors = new StringBuilder();
+                              if (SelectedClient == null)
+                                  errors.AppendLine("Выберите клиента.");
+                              if (SelectedCarBrand == null)
+                                  errors.AppendLine("Выберите марку.");
+                              if (SelectedModel == null)
+                                  errors.AppendLine("Выберите модель.");
+                              if (SelectedStateNumber == null)
+                                  errors.AppendLine("Выберите гос.номер.");
+                              if (Date.ToString() == "")
+                                  errors.AppendLine("Выберите дату.");
+                              if (SelectedServiceType == null)
+                                  errors.AppendLine("Выберите тип обслуживания.");
+                              if (errors.Length > 0)
                               {
-                                  AutoServiceContext.GetContext().SaveChanges();
-                                  MessageBox.Show("Информация сохранена!");
-                                  service = null;
-                                  SetProperties();
-                                  AutoServices = displayAutoServices;
+                                  MessageBox.Show(errors.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                  return;
                               }
-                              catch (Exception ex)
+                              if (selectedServiceType.NameServiceType == "Диагностика" || selectedServiceType.NameServiceType == "Консультация")
                               {
-                                  MessageBox.Show(ex.Message.ToString());
+                                  ServiceType serviceType = context.ServiceTypes.FirstOrDefault(A => A.IdserviceType == selectedServiceType.IdserviceType);
+                                  service = new AutoService() { StateNumber = selectedStateNumber.StateNumber, Idworker = Navigation.MasterNavigation.UserId, DateAutoService = Date, IdserviceType = selectedServiceType.IdserviceType, Price = (serviceType.PriceServiceType * Convert.ToDecimal(1.2)) };
+                                  context.AutoServices.Add(service);
+                                  try
+                                  {
+                                      context.SaveChanges();
+                                      MessageBox.Show("Информация сохранена!");
+                                      service = null;
+                                      SetProperties();
+                                      AutoServices = displayAutoServices;
+                                  }
+                                  catch (Exception ex)
+                                  {
+                                      MessageBox.Show(ex.Message.ToString());
+                                  }
+                                  ResetAll();
                               }
-                              ResetAll();
-                          }
-                          else
-                          {
-                              ServiceType serviceType = AutoServiceContext.GetContext().ServiceTypes.FirstOrDefault(A => A.IdserviceType == selectedServiceType.IdserviceType);
-                              service = new AutoService() { StateNumber = selectedStateNumber.StateNumber, Idworker = Navigation.MasterNavigation.UserId, DateAutoService = Date, IdserviceType = selectedServiceType.IdserviceType, Price = (serviceType.PriceServiceType * Convert.ToDecimal(1.2)) };
-                              AutoServiceContext.GetContext().AutoServices.Add(service);
-                              try
+                              else
                               {
-                                  AutoServiceContext.GetContext().SaveChanges();
-                                  MessageBox.Show("Информация о данном ремонте сохранена! Пожалуйста, выберите запчасти, которые требуются на ремонт и добавьте их в учет для данного ремонта.","Sucess",MessageBoxButton.OK,MessageBoxImage.Information);
-                                  IsEnable = true;
-                                  IsAddingButtonEnable = false;
+                                  ServiceType serviceType = context.ServiceTypes.FirstOrDefault(A => A.IdserviceType == selectedServiceType.IdserviceType);
+                                  service = new AutoService() { StateNumber = selectedStateNumber.StateNumber, Idworker = Navigation.MasterNavigation.UserId, DateAutoService = Date, IdserviceType = selectedServiceType.IdserviceType, Price = (serviceType.PriceServiceType * Convert.ToDecimal(1.2)) };
+                                  context.AutoServices.Add(service);
+                                  try
+                                  {
+                                      context.SaveChanges();
+                                      MessageBox.Show("Информация о данном ремонте сохранена! Пожалуйста, выберите запчасти, которые требуются на ремонт и добавьте их в учет для данного ремонта.", "Sucess", MessageBoxButton.OK, MessageBoxImage.Information);
+                                      IsEnable = true;
+                                      IsAddingButtonEnable = false;
+                                  }
+                                  catch (Exception ex)
+                                  {
+                                      MessageBox.Show(ex.Message.ToString());
+                                  }
                               }
-                              catch (Exception ex)
-                              {
-                                MessageBox.Show(ex.Message.ToString());
-                              }
-                          }
-                          
 
 
+                          }
                       }
                        ));
             }
@@ -562,62 +579,68 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 return addAutoPartToService ??
                       (addAutoPartToService = new RelayCommand((o) =>
                       {
-                          if (selectedAutoPart == null) 
+                          using (var context = new AutoServiceContext())
                           {
-                              MessageBox.Show("Выберите запчасть.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                              return;
-                          }
-                          
-                          AutoServiceAutoPart autoServiceAutoPart = new AutoServiceAutoPart() { IdautoPart = selectedAutoPart.IdautoPart, IdautoService = service.IdautoService };
-                          
-                          if (AutoServiceContext.GetContext().AutoServiceAutoParts.FirstOrDefault(A => A == autoServiceAutoPart) != null)
-                          {
-                              MessageBox.Show("Данная информация уже есть!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                              return;
-                          }
-                          else
-                          {
-                              DateTime dateForPrice = AutoServiceContext.GetContext().AutoPartPrices.Where(A => A.IdautoPart == selectedAutoPart.IdautoPart).Max(A=>A.DateChange);
-                              priceForRepairs += AutoServiceContext.GetContext().AutoPartPrices.FirstOrDefault(A => A.DateChange == dateForPrice && A.IdautoPart == selectedAutoPart.IdautoPart).PriceWithoutRepair;
-                              AutoServiceContext.GetContext().AutoServiceAutoParts.Add(autoServiceAutoPart);
-                              try
+                              if (selectedAutoPart == null)
                               {
-                                  AutoServiceContext.GetContext().SaveChanges();
-                                  MessageBox.Show("Информация сохранена!");
-                                  IsEnableEndButton=true;
+                                  MessageBox.Show("Выберите запчасть.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                  return;
                               }
-                              catch (Exception ex)
+
+                              AutoServiceAutoPart autoServiceAutoPart = new AutoServiceAutoPart() { IdautoPart = selectedAutoPart.IdautoPart, IdautoService = service.IdautoService };
+
+                              if (context.AutoServiceAutoParts.FirstOrDefault(A => A == autoServiceAutoPart) != null)
                               {
-                                  MessageBox.Show(ex.Message.ToString());
+                                  MessageBox.Show("Данная информация уже есть!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                  return;
+                              }
+                              else
+                              {
+                                  DateTime dateForPrice = context.AutoPartPrices.Where(A => A.IdautoPart == selectedAutoPart.IdautoPart).Max(A => A.DateChange);
+                                  priceForRepairs += context.AutoPartPrices.FirstOrDefault(A => A.DateChange == dateForPrice && A.IdautoPart == selectedAutoPart.IdautoPart).PriceWithoutRepair;
+                                  context.AutoServiceAutoParts.Add(autoServiceAutoPart);
+                                  try
+                                  {
+                                      context.SaveChanges();
+                                      MessageBox.Show("Информация сохранена!");
+                                      IsEnableEndButton = true;
+                                  }
+                                  catch (Exception ex)
+                                  {
+                                      MessageBox.Show(ex.Message.ToString());
+                                  }
                               }
                           }
                       }));
             }
-                       
+
         }
         public RelayCommand EndAddingAutoPartToService
         {
             get
             {
-                return endAddingAutoPartToService ?? (endAddingAutoPartToService = new RelayCommand((o) => 
+                return endAddingAutoPartToService ?? (endAddingAutoPartToService = new RelayCommand((o) =>
                 {
-                    AutoService tmp = AutoServiceContext.GetContext().AutoServices.FirstOrDefault(A => A.IdautoService == service.IdautoService);
-                    tmp.Price = ((priceForRepairs + selectedServiceType.PriceServiceType) * Convert.ToDecimal(1.2));
-                    AutoServiceContext.GetContext().AutoServices.Update(tmp);
-                    try
+                    using (var context = new AutoServiceContext())
                     {
-                        AutoServiceContext.GetContext().SaveChanges();
-                        MessageBox.Show("Информация сохранена!");
-                        service = null;
-                        priceForRepairs = 0;
-                        SetProperties();
-                        AutoServices = displayAutoServices;
+                        AutoService tmp = context.AutoServices.FirstOrDefault(A => A.IdautoService == service.IdautoService);
+                        tmp.Price = ((priceForRepairs + selectedServiceType.PriceServiceType) * Convert.ToDecimal(1.2));
+                        context.AutoServices.Update(tmp);
+                        try
+                        {
+                            context.SaveChanges();
+                            MessageBox.Show("Информация сохранена!");
+                            service = null;
+                            priceForRepairs = 0;
+                            SetProperties();
+                            AutoServices = displayAutoServices;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message.ToString());
+                        }
+                        ResetAll();
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message.ToString());
-                    }
-                    ResetAll();
                 }));
             }
         }
@@ -631,6 +654,6 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 }));
             }
         }
-        
+
     }
 }
