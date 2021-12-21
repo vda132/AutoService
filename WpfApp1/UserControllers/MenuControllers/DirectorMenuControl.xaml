@@ -19,7 +19,7 @@
                 <DataTemplate DataType="{x:Type viewmodels:DirectorWorkersViewModel}">
                     <controllers:DirectorWorkersUserControl />
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type viewmodels:DirectorServiceViewModel}">
+                <DataTemplate DataType="{x:Type viewmodels:MasterAutoServiceServiceViewModel}">
                     <controllers:DirectorServiceUserControl />
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type viewmodels:DirectorReportViewModel}">

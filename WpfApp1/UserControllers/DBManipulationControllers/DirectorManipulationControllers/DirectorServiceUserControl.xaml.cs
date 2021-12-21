@@ -24,7 +24,7 @@ namespace WpfApp1.UserControllers.DBManipulationControllers.DirectorManipulation
         public DirectorServiceUserControl()
         {
             InitializeComponent();
-            this.DataContext = new DirectorServiceViewModel();
+            this.DataContext = new MasterAutoServiceServiceViewModel();
         }
     }
 }

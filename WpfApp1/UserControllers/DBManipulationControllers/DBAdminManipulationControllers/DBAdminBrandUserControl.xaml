@@ -15,7 +15,7 @@
         </DataGrid>
         <Button Content="Добавить" 
             Command="{Binding AddCarBrand}" 
-            HorizontalAlignment="Left" Margin="188,473,0,0" VerticalAlignment="Top" Width="78" Height="32"/>
+            HorizontalAlignment="Left" Margin="124,465,0,0" VerticalAlignment="Top" Width="78" Height="32"/>
         <TextBox HorizontalAlignment="Left" Text="{Binding BrandName}" Margin="124,130,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Width="159" Height="27"/>
         <ComboBox x:Name="CountriesBox" HorizontalAlignment="Left"  
             ItemsSource="{Binding AutoConcerns}" 
@@ -23,8 +23,8 @@
             SelectedItem="{Binding SelectedAutoConcern}"  Margin="124,252,0,0" VerticalAlignment="Top" Width="159" Height="27"/>
         <Label Content="Введите название" HorizontalAlignment="Left" Margin="124,99,0,0" VerticalAlignment="Top"/>
         <Label Content="Выберете автоконцерн" HorizontalAlignment="Left" Margin="124,221,0,0" VerticalAlignment="Top"/>
-        <Button Content="Редактировать" Command="{Binding EditBrand}" IsEnabled="{Binding IsEnable}" HorizontalAlignment="Left" Margin="390,473,0,0" VerticalAlignment="Top" Height="32" Width="112"/>
-        <Button Content="Сбросить все" Command="{Binding ResetAll}" IsEnabled="{Binding IsResetEnable}" HorizontalAlignment="Left" Margin="604,473,0,0" VerticalAlignment="Top" Height="32" Width="112"/>
+        <Button Content="Редактировать" Command="{Binding EditBrand}" IsEnabled="{Binding IsEnable}" HorizontalAlignment="Left" Margin="268,465,0,0" VerticalAlignment="Top" Height="32" Width="112"/>
+        <Button Content="Сбросить все" Command="{Binding ResetAll}" IsEnabled="{Binding IsResetEnable}" HorizontalAlignment="Center" Margin="0,465,0,0" VerticalAlignment="Top" Height="32" Width="112"/>
 
     </Grid>
 </UserControl>

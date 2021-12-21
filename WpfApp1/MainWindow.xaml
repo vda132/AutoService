@@ -9,7 +9,7 @@
         xmlns:ViewModel="clr-namespace:WpfApp1.ViewModel"
         d:DataContext="{d:DesignInstance Type=ViewModel:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="AutoService" Height="600" Width="1000">
+        Title="AutoService" Height="600" Width="1000" ResizeMode="NoResize">
     <Grid>
         <ContentControl Content="{Binding CurrentMenuViewModel}">
             <ContentControl.Resources>

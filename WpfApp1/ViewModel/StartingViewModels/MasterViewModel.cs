@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using WpfApp1.Navigation;
 using WpfApp1.ViewModel.Abstract;
 
@@ -13,6 +14,7 @@ namespace WpfApp1.ViewModel
         RelayCommand clientButtonCommnad;
         RelayCommand autoServiceButtonCommnad;
         RelayCommand reportButton;
+        RelayCommand backButtonCommand;
         public RelayCommand ClientButtonCommnad
         {
             get
@@ -43,6 +45,28 @@ namespace WpfApp1.ViewModel
                       (reportButton = new RelayCommand((o) =>
                       {
                           MasterNavigation.ToReport();
+                      }));
+            }
+        }
+        public RelayCommand BackButtonCommand
+        {
+            get
+            {
+                return backButtonCommand ??
+                      (backButtonCommand = new RelayCommand((o) =>
+                      {
+                          if (Navigation.MasterNavigation.CurrentViewModel.GetType() == new MasterViewModel().GetType() && MessageBox.Show($"Вы точно хотите вернуться на страницу авторизации? ", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                          {
+                              Navigation.Navigation.ToLogin();
+                          }
+                          else if (Navigation.MasterNavigation.CurrentViewModel.GetType() != new MasterViewModel().GetType())
+                          {
+                              Navigation.MasterNavigation.ToPreviuosViewModel();
+                          }
+                          else
+                          {
+                              return;
+                          }
                       }));
             }
         }

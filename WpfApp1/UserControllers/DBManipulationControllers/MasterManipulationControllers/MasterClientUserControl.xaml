@@ -8,7 +8,7 @@
     <Grid>
         <TextBox HorizontalAlignment="Left" IsReadOnly="{Binding IsReadOnly}" Text="{Binding NameClient}" Margin="116,101,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="159" Height="27"/>
         <TextBox HorizontalAlignment="Left" Text="{Binding StateNumber}" Margin="116,277,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="159" Height="27"/>
-        <Button Content="Добавить нового клиента" IsEnabled="{Binding IsAddButtonEnable}"  Command="{Binding AddCommand}" HorizontalAlignment="Left" Margin="95,417,0,0" VerticalAlignment="Top" Width="163" Height="32"/>
+        <Button Content="Добавить нового клиента" IsEnabled="{Binding IsAddButtonEnable}"  Command="{Binding AddCommand}" HorizontalAlignment="Left" Margin="116,409,0,0" VerticalAlignment="Top" Width="163" Height="32" RenderTransformOrigin="0.468,0.534"/>
         <Label Content="ФИО" HorizontalAlignment="Left" Margin="116,75,0,0" VerticalAlignment="Top"/>
         <Label Content="Марка машины" HorizontalAlignment="Left" Margin="116,133,0,0" VerticalAlignment="Top"/>
         <Label Content="Модель машины" HorizontalAlignment="Left" Margin="116,192,0,0" VerticalAlignment="Top"/>
@@ -30,7 +30,7 @@
         <Button Content="Добавить еще машину клиенту" 
             Command="{Binding AddNewCarToClient}" 
                IsEnabled="{Binding IsAddNewCarButtonEnable}"
-            HorizontalAlignment="Left" Margin="95,468,0,0" VerticalAlignment="Top" Width="193" Height="32"/>
+            HorizontalAlignment="Left" Margin="116,472,0,0" VerticalAlignment="Top" Width="193" Height="32"/>
         <Button Content="Сбросить все"
             IsEnabled="{Binding IsFilterButtonEnable}"
             Command="{Binding ResetFilters}"

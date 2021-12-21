@@ -9,17 +9,18 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
 {
     class DBAdminAutoPartPriceViewModel : BaseViewModel
     {
-        bool isEnableFilter = false;
+        
+        bool isResetEnable = false;
         List<AutoPartPrice> autoPartPrices;
         List<AutoPartPrice> displayAutoPartPrices;
         List<AutoPart> autoParts = new List<AutoPart>();
         AutoPart selectedAutoPart;
         private DateTime selectedDate = DateTime.Now;
-        RelayCommand resetFilter;
         private string price;
         private RelayCommand addInformation;
         decimal pricePart;
         AutoPart selectedFilter;
+        RelayCommand resetAll;
         public List<AutoPart> AutoParts
         {
             get => autoParts;
@@ -57,9 +58,9 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                 OnPropertyChanged(nameof(SelectedFilter));
                 if (selectedFilter != null)
                 {
+                    IsResetEnable = true;
                     using (var context = new AutoServiceContext())
                     {
-                        IsEnableFilter = true;
                         var tmp = context.AutoPartPrices.Where(A => A.IdautoPart == SelectedFilter.IdautoPart).ToList();
                         foreach (var names in tmp)
                         {
@@ -80,15 +81,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             }
         }
 
-        public bool IsEnableFilter
-        {
-            get => isEnableFilter;
-            set
-            {
-                isEnableFilter = true;
-                OnPropertyChanged(nameof(IsEnableFilter));
-            }
-        }
+        
         public DateTime SelectedDate
         {
             get => selectedDate;
@@ -96,6 +89,10 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             {
                 selectedDate = value;
                 OnPropertyChanged(nameof(SelectedDate));
+                if (selectedDate.ToString() != "")
+                {
+                    IsResetEnable = true;
+                }
             }
         }
         public string Price
@@ -105,6 +102,19 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             {
                 price = value;
                 OnPropertyChanged(nameof(Price));
+                if (price != null)
+                {
+                    IsResetEnable = true;
+                }
+            }
+        }
+        public bool IsResetEnable
+        {
+            get => isResetEnable;
+            set
+            {
+                isResetEnable = value;
+                OnPropertyChanged(nameof(IsResetEnable));
             }
         }
         public AutoPart SelectedAutoPart
@@ -114,29 +124,11 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
             {
                 selectedAutoPart = value;
                 OnPropertyChanged(nameof(SelectedAutoPart));
+                if (selectedAutoPart != null)
+                    IsResetEnable = true;
             }
         }
-        public RelayCommand ResetFilter
-        {
-            get
-            {
-                return resetFilter ??
-                      (resetFilter = new RelayCommand((o) =>
-                      {
-                          using (var context = new AutoServiceContext())
-                          {
-                              SelectedFilter = null;
-                              IsEnableFilter = true;
-                              var tmp = context.AutoPartPrices.ToList();
-                              foreach (var names in tmp)
-                              {
-                                  names.IdautoPartNavigation = context.AutoParts.First(A => A.IdautoPart == names.IdautoPart);
-                              }
-                              AutoPartsPrices = tmp;
-                          }
-                      }));
-            }
-        }
+        
         public RelayCommand AddInformation
         {
             get
@@ -153,19 +145,21 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                                   errors.AppendLine("Введите цену.");
                               if (!Decimal.TryParse(price, out pricePart))
                                   errors.AppendLine("Введите корректную цену.");
-
-                              if (context.AutoPartPrices.Where(A => A.IdautoPart == selectedAutoPart.IdautoPart).Count() > 0)
+                              if(selectedAutoPart!=null&& context.AutoPartPrices.Where(A => A.IdautoPart == selectedAutoPart.IdautoPart).Count() > 0)
                               {
                                   DateTime date = context.AutoPartPrices.Where(A => A.IdautoPart == selectedAutoPart.IdautoPart).Max(A => A.DateChange).Date;
                                   if (date > selectedDate)
                                       errors.AppendLine("Выбранная дата не может быть меньше даты последнего изменения.");
                               }
-
+                              if (selectedDate > DateTime.Now)
+                                  errors.AppendLine("Выбранная дата не может быть больше сегодняшней.");
                               if (errors.Length > 0)
                               {
                                   MessageBox.Show(errors.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                                   return;
                               }
+
+                              
                               AutoPartPrice tmp = new AutoPartPrice() { IdautoPart = SelectedAutoPart.IdautoPart, PriceWithoutRepair = pricePart, DateChange = SelectedDate };
                               if (context.AutoPartPrices.FirstOrDefault(A => A == tmp) != null)
                               {
@@ -176,19 +170,39 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel
                               {
                                   context.AutoPartPrices.Add(tmp);
                                   context.SaveChanges();
-                                  MessageBox.Show("Информация успешно добавлена.", "Успешно", MessageBoxButton.OK);
+                                  MessageBox.Show("Информация успешно добавлена.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
                               }
                               catch (Exception ex)
                               {
                                   MessageBox.Show(ex.Message);
                               }
                               SetProperties();
+                              IsResetEnable = false;
                               AutoPartsPrices = displayAutoPartPrices;
                               SelectedAutoPart = null;
                               Price = null;
                               SelectedDate = DateTime.Now;
                           }
                       }));
+            }
+        }
+        public RelayCommand ResetAll
+        {
+            get
+            {
+                return resetAll ??
+                     (resetAll = new RelayCommand((o) =>
+                     {
+                         
+                         SelectedFilter = null;
+                         SelectedDate = DateTime.Now;
+                         SetProperties();
+                         AutoPartsPrices = displayAutoPartPrices;
+                         SelectedAutoPart = null;
+                         Price = null;
+                         IsResetEnable = false;
+                     }));
+
             }
         }
     }

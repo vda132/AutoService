@@ -112,6 +112,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 OnPropertyChanged(nameof(SelectedClient));
                 if (selectedClient != null)
                 {
+                    DisplayAutoServiceAutoParts = new List<AutoServiceAutoPart>();
                     using (var context = new AutoServiceContext())
                     {
                         IsEnable = true;

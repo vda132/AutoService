@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using WpfApp1.ViewModel.Abstract;
 
 namespace WpfApp1.ViewModel.MenuViewModel
@@ -11,6 +12,7 @@ namespace WpfApp1.ViewModel.MenuViewModel
     class DirectorMenuViewModel : BaseViewModel
     {
         RelayCommand backButtonCommand;
+        bool isBackButtonEnable=true;
         private BaseViewModel currentViewModel;
         public BaseViewModel CurrentViewModel
         {
@@ -34,11 +36,18 @@ namespace WpfApp1.ViewModel.MenuViewModel
                 return backButtonCommand ??
                       (backButtonCommand = new RelayCommand((o) =>
                       {
-                          if (CurrentViewModel.GetType() != new DirectorViewModel().GetType())
+                          if (CurrentViewModel.GetType() == new DirectorViewModel().GetType() && MessageBox.Show($"Вы точно хотите вернуться на страницу авторизации? ", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                          {
+                              Navigation.Navigation.ToLogin();
+                          }
+                          else if (CurrentViewModel.GetType() != new DirectorViewModel().GetType())
                           {
                               CurrentViewModel = Navigation.DirectorNavigation.ToPreviuosViewModel();
                           }
-                          else Navigation.Navigation.ToLogin();
+                          else
+                          {
+                              return;
+                          }
                       }));
             }
         }

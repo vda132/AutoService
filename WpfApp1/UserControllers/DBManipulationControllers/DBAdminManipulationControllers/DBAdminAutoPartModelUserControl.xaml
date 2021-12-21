@@ -40,6 +40,6 @@
         <Button Content="Сбросить все" 
                 IsEnabled="{Binding IsResetEnable}"
             Command="{Binding ResetAll}" 
-            HorizontalAlignment="Left" Margin="320,477,0,0" VerticalAlignment="Top" Width="101" Height="32"/>
+            HorizontalAlignment="Left" Margin="320,455,0,0" VerticalAlignment="Top" Width="100" Height="32"/>
     </Grid>
 </UserControl>

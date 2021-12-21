@@ -17,39 +17,7 @@ namespace WpfApp1.ADO.Net_DB
             var config = Configurations.Configuration.GetConfiguration();
             connectionString = config.Config.GetConnectionString("AutoServiceConnection");
         }
-        public IReadOnlyCollection<Client> GetClients()
-        {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                var query = "Select* from Client";
-                var adapter = new SqlDataAdapter(query, connection);
-                DataSet ds = new DataSet();
-                try
-                {
-                    adapter.Fill(ds, "Table");
-                }
-                catch (SqlException)
-                {
-                    throw;
-                }
-                finally
-                {
-                    connection.Close();
-                }
-                var dt = ds.Tables["Table"];
-                var clients = new List<Client>();
-                foreach (DataRow row in dt.Rows)
-                {
-                    clients.Add(new Client
-                    {
-                        Idclient = (int)row["IDClient"],
-                        NameClient = row["NameClient"].ToString()
-                    });
-                }
-                return clients;
-            }
-        }
+
         public List<KeyValuePair<string, int>> GetWorkerStatistic()
         {
             using (var connection = new SqlConnection(connectionString))

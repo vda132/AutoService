@@ -42,7 +42,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             {
                 carBrands = context.CarBrands.ToList();
                 cars = context.Cars.ToList();
-                models = context.Models.ToList();
+                
                 var clients = context.Clients.ToList();
                 var _models = context.Models.ToList();
                 var brands = context.CarBrands.ToList();
@@ -61,6 +61,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
         {
             SetProperties();
             Cars = displayCars;
+            Models = new List<Model>();
             NameClient = null;
             SelectedCarBrand = null;
             SelectedCarModel = null;
@@ -193,6 +194,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 OnPropertyChanged(nameof(SelectedCarBrand));
                 if (selectedCarBrand != null)
                 {
+                    Models = new List<Model>();
                     IsFilterButtonEnable = true;
                     using (var context = new AutoServiceContext())
                     {

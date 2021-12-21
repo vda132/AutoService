@@ -7,7 +7,7 @@ using WpfApp1.ViewModel.Abstract;
 
 namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewModel
 {
-    class DirectorServiceViewModel : BaseViewModel
+    class MasterAutoServiceServiceViewModel : BaseViewModel
     {
         List<AutoService> autoServices;
         List<AutoService> displayAutoServices;
@@ -16,7 +16,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBDirectorManipulationViewMo
         string nameMasterFilter;
         bool isResetButtonEnable = false;
         RelayCommand resetAllCommand;
-        public DirectorServiceViewModel()
+        public MasterAutoServiceServiceViewModel()
         {
             SetProperties();
         }

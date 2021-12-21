@@ -7,6 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
+        <Button x:Name="BackButton" Width="60" Height="25" Margin="-850,-500,0,0" Content="Назад" FontSize="12" IsEnabled="{Binding IsBackButtonEnable}" Command="{Binding BackButtonCommand}"/>
         <DataGrid  Width="600" Height="350"  Margin="299,32,0,122" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding AutoServices}" SelectionMode="Single">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ФИО клиента" Binding="{Binding StateNumberNavigation.IdclientNavigation.NameClient}" Width="*"/>

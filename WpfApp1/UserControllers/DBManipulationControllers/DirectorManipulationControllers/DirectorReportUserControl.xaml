@@ -19,7 +19,7 @@
                 </DVC:ColumnSeries>
             </DVC:Chart.Series>
         </DVC:Chart>
-        
+
         <DatePicker HorizontalAlignment="Left" SelectedDate="{Binding DateBegin}" Visibility="{Binding BarChartVisibilty}" Margin="64,434,0,0" VerticalAlignment="Top" Width="159" Height="27"/>
         <DatePicker HorizontalAlignment="Left" SelectedDate="{Binding DateEnd}" Visibility="{Binding BarChartVisibilty}" Margin="245,434,0,0" VerticalAlignment="Top" Width="159" Height="28"/>
         <Label Content="Выберите дату от" HorizontalAlignment="Left" Margin="64,410,0,0" Visibility="{Binding BarChartVisibilty}" VerticalAlignment="Top"/>
@@ -29,7 +29,7 @@
         <Button Content="Статистика обслуживаний" IsEnabled="{Binding IsEnable}" HorizontalAlignment="Left" Margin="83,487,0,0" VerticalAlignment="Top" Height="32" Command="{Binding ToServiceStatistic}" Width="164"/>
         <Button Content="Статистика относительно марок" HorizontalAlignment="Left" IsEnabled="{Binding IsPieEnable}" Margin="344,487,0,0" Command="{Binding ToBrandStatistic}" VerticalAlignment="Top" Height="32" Width="204"/>
 
-        <DVC:Chart  Name="pieChart" Visibility="{Binding PieChartVisibility}" Title="Статистика марок автомобилей" VerticalAlignment="Top"  Height="334" Margin="185,30,339,0">
+        <DVC:Chart  Name="pieChart" Visibility="{Binding PieChartVisibility}" Title="Статистика марок автомобилей" VerticalAlignment="Top"  Height="334" Margin="185,62,339,0">
             <DVC:Chart.Series>
                 <DVC:PieSeries Title="Марка" Visibility="{Binding PieChartVisibility}" ItemsSource="{Binding BrandStatistic}"    
                 IndependentValueBinding="{Binding Path=Key}"    

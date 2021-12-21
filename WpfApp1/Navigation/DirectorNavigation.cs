@@ -35,7 +35,7 @@ namespace WpfApp1.Navigation
       
         public static void ToDirectorService()
         {
-            Navigate(new DirectorServiceViewModel());
+            Navigate(new MasterAutoServiceServiceViewModel());
         }
         public static void ToDirectorReport()
         {

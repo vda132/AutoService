@@ -15,16 +15,16 @@
         </DataGrid>
         <Button Content="Добавить" 
             Command="{Binding AddAutoPart}" 
-            HorizontalAlignment="Left" Margin="128,495,0,0" IsEnabled="{Binding IsAddButtonEnable}" VerticalAlignment="Top" Width="81" Height="32"/>
-        <TextBox HorizontalAlignment="Left" Text="{Binding AutoPartName}" Margin="74,100,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Width="159" Height="27"/>
+            HorizontalAlignment="Left" Margin="100,468,0,0" IsEnabled="{Binding IsAddButtonEnable}" VerticalAlignment="Top" Width="81" Height="32"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding AutoPartName}" Margin="100,111,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Width="159" Height="27"/>
         <ComboBox x:Name="CountriesBox" HorizontalAlignment="Left"  
             ItemsSource="{Binding CountryNames}" 
             DisplayMemberPath="NameCountry" 
-            SelectedItem="{Binding SelectedCountry}"  Margin="74,196,0,0" VerticalAlignment="Top" Width="159" Height="27"/>
-        <Label Content="Введите название детали" HorizontalAlignment="Left" Margin="74,69,0,0" VerticalAlignment="Top"/>
-        <Label Content="Выберете страну производителя" HorizontalAlignment="Left" Margin="74,165,0,0" VerticalAlignment="Top"/>
-        <Button Content="Редактировать" Command="{Binding EditAutoPart}" IsEnabled="{Binding IsEnable}" HorizontalAlignment="Left" Margin="276,495,0,0" VerticalAlignment="Top" Height="32" Width="112"/>
-        <Button Content="Сбросить все" HorizontalAlignment="Center" IsEnabled="{Binding IsResetButtonEnable}" Command="{Binding ResetAll}" Margin="0,495,0,0" VerticalAlignment="Top" Height="32" Width="92"/>
+            SelectedItem="{Binding SelectedCountry}"  Margin="100,211,0,0" VerticalAlignment="Top" Width="159" Height="27"/>
+        <Label Content="Введите название детали" HorizontalAlignment="Left" Margin="100,80,0,0" VerticalAlignment="Top"/>
+        <Label Content="Выберете страну производителя" HorizontalAlignment="Left" Margin="100,180,0,0" VerticalAlignment="Top"/>
+        <Button Content="Редактировать" Command="{Binding EditAutoPart}" IsEnabled="{Binding IsEnable}" HorizontalAlignment="Left" Margin="265,468,0,0" VerticalAlignment="Top" Height="32" Width="112"/>
+        <Button Content="Сбросить все" HorizontalAlignment="Center" IsEnabled="{Binding IsResetButtonEnable}" Command="{Binding ResetAll}" Margin="0,468,0,0" VerticalAlignment="Top" Height="32" Width="92"/>
 
     </Grid>
 </UserControl>

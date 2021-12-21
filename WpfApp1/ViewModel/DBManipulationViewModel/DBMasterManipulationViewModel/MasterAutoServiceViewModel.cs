@@ -48,6 +48,8 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
         bool isStateNumberEnable = false;
         bool isClientEnable = true;
         bool isServiceTypeEnable = false;
+        bool isBackButtonEnable = true;
+        RelayCommand backButtonCommand;
         public MasterAutoServiceViewModel()
         {
             SetProperties();
@@ -105,6 +107,7 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             IsClientEnable = true;
             IsStateNumberEnable = false;
             IsServiceTypeEnable = false;
+            IsBackButtonEnable = true;
         }
         public List<AutoService> AutoServices
         {
@@ -163,6 +166,15 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
             {
                 carBrands = value;
                 OnPropertyChanged(nameof(CarBrands));
+            }
+        }
+        public bool IsBackButtonEnable
+        {
+            get => isBackButtonEnable;
+            set
+            {
+                isBackButtonEnable = value;
+                OnPropertyChanged(nameof(IsBackButtonEnable));
             }
         }
         public CarBrand SelectedCarBrand
@@ -558,6 +570,8 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                                       context.SaveChanges();
                                       MessageBox.Show("Информация о данном ремонте сохранена! Пожалуйста, выберите запчасти, которые требуются на ремонт и добавьте их в учет для данного ремонта.", "Sucess", MessageBoxButton.OK, MessageBoxImage.Information);
                                       IsEnable = true;
+                                      IsBackButtonEnable = false;
+                                      IsResetButtonEnable = false;
                                       IsAddingButtonEnable = false;
                                   }
                                   catch (Exception ex)
@@ -654,6 +668,17 @@ namespace WpfApp1.ViewModel.DBManipulationViewModel.DBMasterManipulationViewMode
                 }));
             }
         }
+        public RelayCommand BackButtonCommand
+        {
+            get
+            {
+                return backButtonCommand ??
+                      (backButtonCommand = new RelayCommand((o) =>
+                      {
+                              Navigation.MasterNavigation.ToPreviuosViewModel();
 
+                      }));
+            }
+        }
     }
 }
