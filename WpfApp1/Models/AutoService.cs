@@ -14,10 +14,12 @@ namespace WpfApp1
 
         public int IdautoService { get; set; }
         public string StateNumber { get; set; }
-        public int Idworker { get; set; }
+        public int? Idworker { get; set; }
         public DateTime DateAutoService { get; set; }
         public int IdserviceType { get; set; }
         public decimal Price { get; set; }
+
+        public string NameWorker => IdworkerNavigation == null ? "Данный сотрудник был уволен." : IdworkerNavigation.NameWorker;
 
         public virtual ServiceType IdserviceTypeNavigation { get; set; }
         public virtual Worker IdworkerNavigation { get; set; }

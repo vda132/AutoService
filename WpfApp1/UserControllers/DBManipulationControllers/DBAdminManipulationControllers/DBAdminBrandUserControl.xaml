@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers.DBAdminBrandUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfApp1.UserControllers.DBManipulationControllers.DBAdminManipulationControllers" xmlns:dbadminmanipulationviewmodel="clr-namespace:WpfApp1.ViewModel.DBManipulationViewModel.DBAdminManipulationViewModel" d:DataContext="{d:DesignInstance Type=dbadminmanipulationviewmodel:DBAdminBrandViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="1000">
+    <Grid>
+        <DataGrid  Width="600" Height="350" SelectedItem = "{Binding SelectedCarBrand}" Margin="249,29,10,120" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding CarBrands}"  SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Название автоконцерна" Binding="{Binding ConcernName}" Width="*"/>
+                <DataGridTextColumn Header="Название марки" Width="*" Binding="{Binding NameCarBrand}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Content="Добавить" 
+            Command="{Binding AddCarBrand}" 
+            HorizontalAlignment="Left" Margin="124,465,0,0" VerticalAlignment="Top" Width="78" Height="32"/>
+        <TextBox HorizontalAlignment="Left" Text="{Binding BrandName}" Margin="124,130,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Width="159" Height="27"/>
+        <ComboBox x:Name="CountriesBox" HorizontalAlignment="Left"  
+            ItemsSource="{Binding AutoConcerns}" 
+            DisplayMemberPath="NameAutoConcern" 
+            SelectedItem="{Binding SelectedAutoConcern}"  Margin="124,252,0,0" VerticalAlignment="Top" Width="159" Height="27"/>
+        <Label Content="Введите название" HorizontalAlignment="Left" Margin="124,99,0,0" VerticalAlignment="Top"/>
+        <Label Content="Выберете автоконцерн" HorizontalAlignment="Left" Margin="124,221,0,0" VerticalAlignment="Top"/>
+        <Button Content="Редактировать" Command="{Binding EditBrand}" IsEnabled="{Binding IsEnable}" HorizontalAlignment="Left" Margin="268,465,0,0" VerticalAlignment="Top" Height="32" Width="112"/>
+        <Button Content="Сбросить все" Command="{Binding ResetAll}" IsEnabled="{Binding IsResetEnable}" HorizontalAlignment="Center" Margin="0,465,0,0" VerticalAlignment="Top" Height="32" Width="112"/>
+
+    </Grid>
+</UserControl>

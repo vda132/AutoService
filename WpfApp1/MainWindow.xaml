@@ -3,7 +3,29 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp1"
+        xmlns:MenuController="clr-namespace:WpfApp1.UserControllers.MenuControllers"
+        xmlns:Controller="clr-namespace:WpfApp1.UserControllers"
+        xmlns:MenuViewModel="clr-namespace:WpfApp1.ViewModel.MenuViewModel"
+        xmlns:ViewModel="clr-namespace:WpfApp1.ViewModel"
+        d:DataContext="{d:DesignInstance Type=ViewModel:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="AutoService" Height="600" Width="1000" ResizeMode="NoResize">
+    <Grid>
+        <ContentControl Content="{Binding CurrentMenuViewModel}">
+            <ContentControl.Resources>
+                <DataTemplate DataType="{x:Type ViewModel:LoginViewModel}">
+                    <Controller:LoginController/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type MenuViewModel:DirectorMenuViewModel}">
+                    <MenuController:DirectorMenuControl />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type MenuViewModel:MasterMenuViewModel}">
+                    <MenuController:MasterMenuControl />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type MenuViewModel:DBAdminMenuViewModel}">
+                    <MenuController:DBAdminMenuControl />
+                </DataTemplate>
+            </ContentControl.Resources>
+        </ContentControl>
+    </Grid>
 </Window>
